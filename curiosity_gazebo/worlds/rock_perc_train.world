@@ -1,0 +1,1406 @@
+<sdf version='1.10'>
+  <world name='default'>
+    <scene>
+      <ambient>0.400000006 0.400000006 0.400000006 1</ambient>
+      <background>0.899999976 0.753000021 0.660000026 1</background>
+      <grid>false</grid>
+      <shadows>true</shadows>
+    </scene>
+    <plugin name='gz::sim::systems::Physics' filename='gz-sim-physics-system'/>
+    <plugin name='gz::sim::systems::UserCommands' filename='gz-sim-user-commands-system'/>
+    <plugin name='gz::sim::systems::SceneBroadcaster' filename='gz-sim-scene-broadcaster-system'/>
+    <gravity>0 0 -3.7109999999999999</gravity>
+    <magnetic_field>5.5644999999999998e-06 2.2875799999999999e-05 -4.2388400000000002e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <model name='curiosity_path'>
+      <static>true</static>
+      <link name='link'>
+        <inertial>
+          <mass>0.25</mass>
+          <inertia>
+            <ixx>0.00014999999999999999</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.00014999999999999999</iyy>
+            <iyz>0</iyz>
+            <izz>0.00014999999999999999</izz>
+          </inertia>
+          <pose>0 0 0 0 0 0</pose>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>file:///home/gerard/ros2_ws/install/curiosity_gazebo/share/curiosity_gazebo/models/curiosity_path/meshes/curiosity_path.stl</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>30</mu>
+                <mu2>30</mu2>
+              </ode>
+            </friction>
+            <contact>
+              <ode>
+                <kp>1000000</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0.002</min_depth>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>file:///home/gerard/ros2_ws/install/curiosity_gazebo/share/curiosity_gazebo/models/curiosity_path/meshes/mars_path_simple1.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <velocity_decay>
+          <linear>0</linear>
+          <angular>0</angular>
+        </velocity_decay>
+        <self_collide>false</self_collide>
+        <kinematic>false</kinematic>
+        <gravity>true</gravity>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>0 0 0 0 0 0</pose>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock6'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0069880000000000003 -0.0030530000000000002 0 0 0</pose>
+          <mass>1.0940000000000001</mass>
+          <inertia>
+            <ixx>0.0011747051758000001</ixx>
+            <ixy>5.1737634200000007e-05</ixy>
+            <ixz>-5.2135730000000005e-05</ixz>
+            <iyy>0.0011684989258</iyy>
+            <iyz>4.8388763400000012e-05</iyz>
+            <izz>0.0011260152344000002</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock06_Collider.dae</uri>
+              <scale>2.0 2.0 2.0</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock06.dae</uri>
+              <scale>2.0 2.0 2.0</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>0.8 0.3 0.2 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 6/5/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>9.3314673265177657 -1.2043380840450335 -9.5779266278535911 1.4564832204467648 -0.74609649030858116 1.5803178413928178</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock5'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0049880000000000002 -0.0030530000000000002 0 0 0</pose>
+          <mass>8.7539999999999996</mass>
+          <inertia>
+            <ixx>0.037590480000000003</ixx>
+            <ixy>0.0016555999999999999</ixy>
+            <ixz>-0.0016683500000000001</ixz>
+            <iyy>0.037391889999999997</iyy>
+            <iyz>0.0015483999999999999</iyz>
+            <izz>0.036032410000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock05_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock05.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 5/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>7.3987829346462819 -8.4778496553905267 -10.042924005269869 0.52462707679435827 0.63459228058128614 -0.39854090184369834</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock4'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0049880000000000002 -0.0030530000000000002 0 0 0</pose>
+          <mass>70.031999999999996</mass>
+          <inertia>
+            <ixx>1.202</ixx>
+            <ixy>0.051999999999999998</ixy>
+            <ixz>-0.053999999999999999</ixz>
+            <iyy>1.196</iyy>
+            <iyz>0.050000000000000003</iyz>
+            <izz>1.1539999999999999</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock04_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock04.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 4/9/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>3.2887751227911211 -1.2013384598121792 -8.8995938566635591 -2.8355374514672893 0.70513863270833776 -1.2312888262933208</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock4_0'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0049880000000000002 -0.0030530000000000002 0 0 0</pose>
+          <mass>70.031999999999996</mass>
+          <inertia>
+            <ixx>1.202</ixx>
+            <ixy>0.051999999999999998</ixy>
+            <ixz>-0.053999999999999999</ixz>
+            <iyy>1.196</iyy>
+            <iyz>0.050000000000000003</iyz>
+            <izz>1.1539999999999999</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock04_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock04.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 4/9/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>0.85948435333739137 6.885587761039913 -7.1694901096844115 -3.023926765738596 0.74590577254453394 -1.9851557269240956</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock3'>
+      <link name='base_link'>
+        <inertial>
+          <pose>0.018197000000000001 0.019886999999999998 -0.018096999999999999 0 0 0</pose>
+          <mass>195.30799999999999</mass>
+          <inertia>
+            <ixx>6.4800000000000004</ixx>
+            <ixy>0.224</ixy>
+            <ixz>-0.32000000000000001</ixz>
+            <iyy>6.4480000000000004</iyy>
+            <iyz>0.094</iyz>
+            <izz>6.6040000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>11.977643194659095 8.3119342965187109 -7.5320744693678394 1.6065246671699842 -0.59592331294122081 -2.9029442064777213</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock3_0'>
+      <link name='base_link'>
+        <inertial>
+          <pose>0.018197000000000001 0.019886999999999998 -0.018096999999999999 0 0 0</pose>
+          <mass>195.30799999999999</mass>
+          <inertia>
+            <ixx>6.4800000000000004</ixx>
+            <ixy>0.224</ixy>
+            <ixz>-0.32000000000000001</ixz>
+            <iyy>6.4480000000000004</iyy>
+            <iyz>0.094</iyz>
+            <izz>6.6040000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>24.804637124978424 -4.8461776195990707 -10.130053439609968 -2.6176402644756136 -0.29662437093358102 0.75552562985823912</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock3_1'>
+      <link name='base_link'>
+        <inertial>
+          <pose>0.018197000000000001 0.019886999999999998 -0.018096999999999999 0 0 0</pose>
+          <mass>195.30799999999999</mass>
+          <inertia>
+            <ixx>6.4800000000000004</ixx>
+            <ixy>0.224</ixy>
+            <ixz>-0.32000000000000001</ixz>
+            <iyy>6.4480000000000004</iyy>
+            <iyz>0.094</iyz>
+            <izz>6.6040000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>24.068391098738704 -3.1301686202281651 -10.103745005597245 1.7257840498479806 -0.56722191335047978 0.069257433945779712</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock4_1'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0049880000000000002 -0.0030530000000000002 0 0 0</pose>
+          <mass>70.031999999999996</mass>
+          <inertia>
+            <ixx>1.202</ixx>
+            <ixy>0.051999999999999998</ixy>
+            <ixz>-0.053999999999999999</ixz>
+            <iyy>1.196</iyy>
+            <iyz>0.050000000000000003</iyz>
+            <izz>1.1539999999999999</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock04_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock04.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 4/9/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 4/9/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-10.98642245963971 8.9135390061346396 -6.572273176008653 3.0569905565799873 -0.66060238568070162 -2.0669918296422281</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock5_0'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0049880000000000002 -0.0030530000000000002 0 0 0</pose>
+          <mass>8.7539999999999996</mass>
+          <inertia>
+            <ixx>0.037590480000000003</ixx>
+            <ixy>0.0016555999999999999</ixy>
+            <ixz>-0.0016683500000000001</ixz>
+            <iyy>0.037391889999999997</iyy>
+            <iyz>0.0015483999999999999</iyz>
+            <izz>0.036032410000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock05_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock05.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 5/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 5/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-8.5674663359534122 7.8689408749971799 -6.8455924144855711 -2.8335614351183418 0.81001686625960412 -0.71767758638547974</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock6_0'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.0075310000000000004 -0.0069880000000000003 -0.0030530000000000002 0 0 0</pose>
+          <mass>1.0940000000000001</mass>
+          <inertia>
+            <ixx>0.0011747051758000001</ixx>
+            <ixy>5.1737634200000007e-05</ixy>
+            <ixz>-5.2135730000000005e-05</ixz>
+            <iyy>0.0011684989258</iyy>
+            <iyz>4.8388763400000012e-05</iyz>
+            <izz>0.0011260152344000002</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock06_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock06.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 6/5/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 6/5/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-4.2038030152984014 6.9911777283441188 -7.0405622712093097 0.49673313708886063 0.49466113276215523 2.8174331193018411</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>5.6775324584967288 -0.23855532030630727 -8.4710347440789633 2.0689788221851488 -0.43512474214872127 0.87092812136953934</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1_0'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-1.8931794504461985 -7.3395322740077606 -8.8260574989655343 -1.1959757031441356 -0.23580323706716275 -0.51238901020670513</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1_1'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-2.951082073437008 -24.742354441949942 -10.058109393509373 0.67731442596708213 0.11654961524850264 0.3740998216991277</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1_2'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>19.842630058888272 -29.420433448434775 -11.236241663068013 -1.1702254661075615 -0.32248023541250687 0.29488063543257453</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1_3'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>41.250973476054391 -17.678512682359955 -11.14970704880697 -2.971819613388742 0.37338770126207349 2.4041515093100236</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1_4'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>32.353591500738062 12.190204548607889 -8.5161845742708486 -1.827351637574977 0.51911951814833668 0.53093323586562102</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock2'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.014732 -0.014451 0.0037100000000000002 0 0 0</pose>
+          <mass>646.50800000000004</mass>
+          <inertia>
+            <ixx>49.619999999999997</ixx>
+            <ixy>4.0800000000000001</ixy>
+            <ixz>-0.32400000000000001</ixz>
+            <iyy>46.472000000000001</iyy>
+            <iyz>-3.9260000000000002</iyz>
+            <izz>51.061999999999998</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-6.3024552864942986 -7.9592413930925083 -8.9100688811089519 -2.1739327799468362 0.49941375631682955 2.7903544298023015</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock2_0'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.014732 -0.014451 0.0037100000000000002 0 0 0</pose>
+          <mass>646.50800000000004</mass>
+          <inertia>
+            <ixx>49.619999999999997</ixx>
+            <ixy>4.0800000000000001</ixy>
+            <ixz>-0.32400000000000001</ixz>
+            <iyy>46.472000000000001</iyy>
+            <iyz>-3.9260000000000002</iyz>
+            <izz>51.061999999999998</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>12.268401090174249 13.69146548944328 -6.9511470747844823 -2.2667317683488379 0.51319356352573875 -2.9522422163717126</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock2_1'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.014732 -0.014451 0.0037100000000000002 0 0 0</pose>
+          <mass>646.50800000000004</mass>
+          <inertia>
+            <ixx>49.619999999999997</ixx>
+            <ixy>4.0800000000000001</ixy>
+            <ixz>-0.32400000000000001</ixz>
+            <iyy>46.472000000000001</iyy>
+            <iyz>-3.9260000000000002</iyz>
+            <izz>51.061999999999998</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>34.718892873424821 -27.270527962786584 -11.766201612537966 -0.15572451380742192 0.57715405027722799 -0.62338542801657582</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock2_2'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.014732 -0.014451 0.0037100000000000002 0 0 0</pose>
+          <mass>646.50800000000004</mass>
+          <inertia>
+            <ixx>49.619999999999997</ixx>
+            <ixy>4.0800000000000001</ixy>
+            <ixz>-0.32400000000000001</ixz>
+            <iyy>46.472000000000001</iyy>
+            <iyz>-3.9260000000000002</iyz>
+            <izz>51.061999999999998</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-7.5620043143375071 -1.4441811056659237 -8.1459969549000224 2.1028404077345129 -1.07685484237187 -1.4232442169535009</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock2_3'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.014732 -0.014451 0.0037100000000000002 0 0 0</pose>
+          <mass>646.50800000000004</mass>
+          <inertia>
+            <ixx>49.619999999999997</ixx>
+            <ixy>4.0800000000000001</ixy>
+            <ixz>-0.32400000000000001</ixz>
+            <iyy>46.472000000000001</iyy>
+            <iyz>-3.9260000000000002</iyz>
+            <izz>51.061999999999998</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock02.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-13.770791000898409 -11.690284934044474 -8.6754794927581624 -0.15631130030212284 0.5110379544411211 0.68566906653785886</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock3_2'>
+      <link name='base_link'>
+        <inertial>
+          <pose>0.018197000000000001 0.019886999999999998 -0.018096999999999999 0 0 0</pose>
+          <mass>195.30799999999999</mass>
+          <inertia>
+            <ixx>6.4800000000000004</ixx>
+            <ixy>0.224</ixy>
+            <ixz>-0.32000000000000001</ixz>
+            <iyy>6.4480000000000004</iyy>
+            <iyz>0.094</iyz>
+            <izz>6.6040000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-3.9518105291979948 -20.050221420132793 -10.075705976395843 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock3_3'>
+      <link name='base_link'>
+        <inertial>
+          <pose>0.018197000000000001 0.019886999999999998 -0.018096999999999999 0 0 0</pose>
+          <mass>195.30799999999999</mass>
+          <inertia>
+            <ixx>6.4800000000000004</ixx>
+            <ixy>0.224</ixy>
+            <ixz>-0.32000000000000001</ixz>
+            <iyy>6.4480000000000004</iyy>
+            <iyz>0.094</iyz>
+            <izz>6.6040000000000001</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock03.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 3/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>-5.5577003185771368 -7.6273326582723628 -9.1059951009899152 2.5842193140270129 -0.92712405448495838 -0.44311433027900377</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <model name='falling_rock1_5'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.056100999999999998 0.0073400000000000002 0.020250000000000001 0 0 0</pose>
+          <mass>2569.46</mass>
+          <inertia>
+            <ixx>466.31400000000002</ixx>
+            <ixy>6.5540000000000003</ixy>
+            <ixz>-0.84599999999999997</ixz>
+            <iyy>479.238</iyy>
+            <iyz>-5.226</iyz>
+            <izz>499.18400000000003</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01_Collider.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>meshes/FallingRock01.dae</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 1/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>38.143717478331283 3.2701664413605136 -9.8447099458314948 -2.8901394866778798 0.41314236072280086 1.0025358548938175</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6</uri>
+      <name>falling_rock2_4</name>
+      <pose>16.786305667037713 -28.343589269043601 -11.429717552733205 1.9921328254191422 -0.61399120783591343 2.5935547601866884</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 1/6</uri>
+      <name>falling_rock1_6</name>
+      <pose>39.33926485163132 -25.518460838744431 -11.460296924740041 -1.2003181306580182 -0.34898997551443323 1.4455246169748723</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 6/5</uri>
+      <name>falling_rock6_1</name>
+      <pose>-0.48754264808852826 -22.39399918692969 -10.545734702067028 1.3483105657443901 -0.71146402365334471 3.1129955140642482</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 5/6</uri>
+      <name>falling_rock5_1</name>
+      <pose>9.3819224632159308 -22.299149598908574 -11.067004265000728 0.41592923982572921 0.46707168108977426 2.7973149468356557</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 5/6</uri>
+      <name>falling_rock5_2</name>
+      <pose>20.524058309498081 -27.24294392392046 -11.629015826003492 -3.0150987749263165 0.67141173720113512 3.0057891424276444</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 4/9</uri>
+      <name>falling_rock4_2</name>
+      <pose>26.460296962357564 -21.081150657045104 -11.409695368281014 -2.982534294531642 0.80760852510293601 -1.217285417962187</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 5/6</uri>
+      <name>falling_rock5_3</name>
+      <pose>45.223586568302892 -7.521808175571028 -11.04700464677294 0.60683512118461314 0.64651390736397352 0.034933750600143428</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 6/5</uri>
+      <name>falling_rock6_2</name>
+      <pose>27.09584416909998 -33.335801365279352 -12.170045234092369 1.4296899568357697 -0.57206756619499655 -0.86594122672764318</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6</uri>
+      <name>falling_rock2_5</name>
+      <pose>29.006910470169391 -27.238399670308837 -11.59875793256049 2.0311250747774294 -0.53532785547709005 2.2407852672549096</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6</uri>
+      <name>falling_rock2_6</name>
+      <pose>30.87924598303475 4.2462809107987178 -9.7545482343941678 -0.18023460150944612 0.54909540186542105 -1.6216102750718144</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6</uri>
+      <name>falling_rock3_4</name>
+      <pose>-6.6913231273976361 -9.1094857770740276 -8.9905704398827826 -2.570609252711709 0.92103401671154561 0.93899877824154454</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 3/6</uri>
+      <name>falling_rock3_5</name>
+      <pose>-4.8102253662130066 -22.204712881903387 -10.202291237864545 1.6648957009737293 -0.60075178736870039 -2.589963848518531</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6</uri>
+      <name>falling_rock2_7</name>
+      <pose>9.2955167292559047 22.576231561902866 -5.7510955290119039 -0.13192562024343318 0.45571817539337067 0.82771867514002428</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6</uri>
+      <name>falling_rock2_8</name>
+      <pose>-18.660173235738874 -14.403051300151418 -8.6813905997983092 1.9302501967117405 -0.55915272251182224 2.9513968129115726</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 4/9</uri>
+      <name>falling_rock4_3</name>
+      <pose>-22.490921909824987 -18.711036217974499 -9.1781806085803357 -0.070729096012700776 -0.089584055477308341 0.013088126687467833</pose>
+    </include>
+    <include>
+      <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 4/9</uri>
+      <name>falling_rock4_4</name>
+      <pose>-25.064235512824162 0.404412609272295 -6.6047282939739391 -2.9798325953251008 0.75417403020899898 -2.1030319400421682</pose>
+    </include>
+    <light name='sun' type='directional'>
+      <pose>0 0 10 0 0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <intensity>1</intensity>
+      <direction>-0.5 0.10000000000000001 -0.90000000000000002</direction>
+      <diffuse>0.800000012 0.800000012 0.800000012 1</diffuse>
+      <specular>0.200000003 0.200000003 0.200000003 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <linear>0.0099999997764825821</linear>
+        <constant>0.89999997615814209</constant>
+        <quadratic>0.0010000000474974513</quadratic>
+      </attenuation>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+  </world>
+</sdf>

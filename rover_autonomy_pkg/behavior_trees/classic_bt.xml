@@ -1,0 +1,30 @@
+ <root BTCPP_format="4">
+     <BehaviorTree ID="MainTree">
+        <KeepRunningUntilFailure>
+            <ForceSuccess>
+
+                <ReactiveSequence name="mission_loop">
+                    
+                    <CheckMissionObjective name="is_mission_still_valid" goal_output="{target_waypoint}"/>
+                    
+                    <Sequence name="mission_steps">
+                        <ExecuteTask name="execute_mission_task"/>
+                        
+                        <Fallback name="navigate_with_recovery">
+                            
+                            <ReactiveSequence name="navigation">
+                                <IsPathClear name="is_path_clear"/>
+                                <FollowTrajectory name="follow_trajectory" goal_input="{target_waypoint}"/>
+                            </ReactiveSequence>
+
+                            <ReactToObstacle name="react_to_obstacle"/>
+
+                        </Fallback>
+                        <WaitForNextTask name="wait_for_next_task"/>
+                    </Sequence>
+
+                </ReactiveSequence>
+            </ForceSuccess>
+        </KeepRunningUntilFailure>
+     </BehaviorTree>
+ </root>

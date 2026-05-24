@@ -1,0 +1,5 @@
+string class_name
+float32 confidence
+int32 bbox_center_x
+int32 bbox_center_y
+float32 distance_meters
