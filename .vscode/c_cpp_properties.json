@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/opt/ros/jazzy/include/**",
-                "/home/gerard/ros2_ws/install/my_robot_interfaces/include/**"
+                "/home/gerard/ros2_ws/install/my_robot_interfaces/include/**",
+                "/home/gerard/ros2_ws/install/rover_interfaces/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

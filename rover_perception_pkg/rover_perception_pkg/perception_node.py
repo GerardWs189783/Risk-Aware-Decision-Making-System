@@ -109,7 +109,6 @@ class PerceptionNode(Node):
 
                 array_perception_msg.detections.append(detected_rock)
 
-        # The Hysteresis logic stays EXACTLY the same!
         self.detection_buffer.append(current_frame_danger)
         true_count = sum(self.detection_buffer)
 
@@ -124,7 +123,7 @@ class PerceptionNode(Node):
         
         self.get_logger().info(f"State: {self.is_rock_active} | Rocks in ROI: {len(array_perception_msg.detections)} | Buffer: {true_count}/5")     
         annotated_frame = results[0].plot()
-        cv2.polylines(annotated_frame, [self.roi_polygon], isClosed=True, color=(0,255, 0), thickness=2)
+        #cv2.polylines(annotated_frame, [self.roi_polygon], isClosed=True, color=(0,255, 0), thickness=2)
 
         
         # Convert the OpenCV image back into a ROS 2 Image message

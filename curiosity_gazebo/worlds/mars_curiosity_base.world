@@ -88,7 +88,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>9.3314673265177657 -1.2043380840450335 -9.5779266278535911 1.4564832204467648 -0.74609649030858116 1.5803178413928178</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -142,7 +142,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-4.2038030152984014 6.9911777283441188 -7.0405622712093097 0.49673313708886063 0.49466113276215523 2.8174331193018411</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -196,7 +196,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>7.3987829346462819 -8.4778496553905267 -10.042924005269869 0.52462707679435827 0.63459228058128614 -0.39854090184369834</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -250,7 +250,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-8.5674663359534122 7.8689408749971799 -6.8455924144855711 -2.8335614351183418 0.81001686625960412 -0.71767758638547974</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -304,7 +304,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-21 -4 -7.3455924144855711 -2.8335614351183418 0.81001686625960412 -0.71767758638547974</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -358,7 +358,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-32 5 -5.54559 -2.8335614351183418 0.81001686625960412 -0.71767758638547974</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -411,8 +411,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>8.2887751227911211 -13.2013384598121792 -8.8995938566635591 -2.8355374514672893 1.70513863270833776 -1.2312888262933208</pose>
-      <static>false</static>
+      <pose>3.2887751227911211 -1.2013384598121792 -8.8995938566635591 -2.8355374514672893 0.70513863270833776 -1.2312888262933208</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -466,7 +466,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>0.85948435333739137 6.885587761039913 -7.1694901096844115 -3.023926765738596 0.74590577254453394 -1.9851557269240956</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -520,7 +520,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-10.98642245963971 8.9135390061346396 -6.572273176008653 3.0569905565799873 -0.66060238568070162 -2.0669918296422281</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -574,7 +574,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-38 8.9135390061346396 -4.5 -8 -0.66060238568070162 -2.0669918296422281</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -628,7 +628,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>11.977643194659095 8.3119342965187109 -7.5320744693678394 1.6065246671699842 -0.59592331294122081 -2.9029442064777213</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -682,7 +682,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>24.804637124978424 -4.8461776195990707 -10.130053439609968 -2.6176402644756136 -0.29662437093358102 0.75552562985823912</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -736,7 +736,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>24.068391098738704 -3.1301686202281651 -10.103745005597245 1.7257840498479806 -0.56722191335047978 0.069257433945779712</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -790,7 +790,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-3.9518105291979948 -23.5502 -10.075705976395843 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -844,7 +844,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-5.5577003185771368 -7.6273326582723628 -9.1059951009899152 2.5842193140270129 -0.92712405448495838 -0.44311433027900377</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -898,7 +898,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>1.8 -16.050221420132793 -9.9 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -952,7 +952,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>25.9518105291979948 30.5502 -5.475705976395843 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1006,7 +1006,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-29.951 -4.5 -6.7 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1060,7 +1060,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-21.951 9.5 -5.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1113,8 +1113,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>21.951 6.5 -1.67 2.34849749228479543 -1.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <pose>11.951 2.5 -8.67 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1168,7 +1168,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-5 19.5 -5.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1222,7 +1222,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-6.3024552864942986 -7.9592413930925083 -8.9100688811089519 -2.1739327799468362 0.49941375631682955 2.7903544298023015</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1276,7 +1276,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>12.268401090174249 13.69146548944328 -6.9511470747844823 -2.2667317683488379 0.51319356352573875 -2.9522422163717126</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1329,8 +1329,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>30.71 -37.27 -1.1 -3.15 0.577 -0.62</pose>
-      <static>false</static>
+      <pose>34.718892873424821 -27.270527962786584 -11.766201612537966 -0.15572451380742192 0.57715405027722799 -0.62338542801657582</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1384,7 +1384,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-7.5620043143375071 -1.4441811056659237 -8.1459969549000224 2.1028404077345129 -1.07685484237187 -1.4232442169535009</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1438,7 +1438,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-13.770791000898409 -11.690284934044474 -8.6754794927581624 -0.15631130030212284 0.5110379544411211 0.68566906653785886</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1492,7 +1492,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-0.9518105291979948 -23.550221420132793 -9.9 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1545,8 +1545,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-11.9518105291979948 -39.050221420132793 -1 1.2 -0.65 -1.3</pose>
-      <static>false</static>
+      <pose>-2.9518105291979948 -35.050221420132793 -11 0.34849749228479543 -0.65 -1.3</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1599,8 +1599,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-4.9518105291979948 -32.050221420132793 -1.4 0.34849749228479543 -2.65 -1.3</pose>
-      <static>false</static>
+      <pose>-9.9518105291979948 -38.050221420132793 -11.4 0.34849749228479543 -0.65 -1.3</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1653,8 +1653,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-20.9518105291979948 -49.050221420132793 -1.4 0.34849749228479543 -0.65 -1.3</pose>
-      <static>false</static>
+      <pose>-20.9518105291979948 -49.050221420132793 -11.4 0.34849749228479543 -0.65 -1.3</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1707,8 +1707,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>5.6775324584967288 -5.23855532030630727 -8.4710347440789633 2.0689788221851488 -2.43512474214872127 0.87092812136953934</pose>
-      <static>false</static>
+      <pose>5.6775324584967288 -0.23855532030630727 -8.4710347440789633 2.0689788221851488 -0.43512474214872127 0.87092812136953934</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1762,7 +1762,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-7.8931794504461985 -7.3395322740077606 -8.8260574989655343 -1.1959757031441356 -0.23580323706716275 -0.51238901020670513</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1816,7 +1816,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>-2.951082073437008 -24.742354441949942 -10.058109393509373 0.67731442596708213 0.11654961524850264 0.3740998216991277</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1869,8 +1869,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>19.842630058888272 -19.5 -1.1 -1.1702254661075615 -0.92248023541250687 1.29488063543257453</pose>
-      <static>false</static>
+      <pose>19.842630058888272 -29.420433448434775 -11.236241663068013 -1.1702254661075615 -0.32248023541250687 0.29488063543257453</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1923,8 +1923,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>41.25 -19.67 -1.8 -1.97 1.37 2.40</pose>
-      <static>false</static>
+      <pose>41.250973476054391 -17.678512682359955 -11.14970704880697 -2.971819613388742 0.37338770126207349 2.4041515093100236</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -1978,7 +1978,7 @@
         <enable_wind>false</enable_wind>
       </link>
       <pose>32.353591500738062 12.190204548607889 -8.5161845742708486 -1.827351637574977 0.51911951814833668 0.53093323586562102</pose>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -2031,8 +2031,8 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>38.14 1.27 -0.84 -0.89 0.41 1</pose>
-      <static>false</static>
+      <pose>38.143717478331283 3.2701664413605136 -9.8447099458314948 -2.8901394866778798 0.41314236072280086 1.0025358548938175</pose>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
 
@@ -2261,15 +2261,10 @@
 
 
     <!-- Martian Map-->
-    <!--<include>
+    <include>
       <uri>model://curiosity_path</uri>
       <name>curiosity_path</name>
       <pose>0 0 0 0 0 0</pose>
-    </include> -->
-    <include>
-      <uri>https://fuel.gazebosim.org/1.0/jasmeetsingh/models/Mars Gale Crater Patch 2</uri>
-      <name>mars_gale_crater</name>
-      <pose>0 0 -10 0 0 0</pose>
     </include>
 
   </world>

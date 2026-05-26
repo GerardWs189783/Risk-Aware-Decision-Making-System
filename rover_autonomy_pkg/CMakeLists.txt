@@ -9,13 +9,24 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(ament_index_cpp REQUIRED)
+find_package(rover_interfaces REQUIRED)
 
 add_executable(bt_test src/test.cpp)
 ament_target_dependencies(bt_test rclcpp behaviortree_cpp)
 
+add_executable(autonomy_node src/autonomy_node.cpp)
+ament_target_dependencies(autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces)
+
 # Install node
-install(TARGETS bt_test
-  DESTINATION lib/${PROJECT_NAME}
+install(TARGETS 
+bt_test 
+autonomy_node
+DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY behavior_trees/
+  DESTINATION share/${PROJECT_NAME}/behavior_trees
 )
 
 ament_package()
