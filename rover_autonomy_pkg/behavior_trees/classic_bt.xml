@@ -13,11 +13,11 @@
                         <Fallback name="navigate_with_recovery">
                             
                             <ReactiveSequence name="navigation">
-                                <IsPathClear name="is_path_clear"/>
+                                <CheckObstacle name="check_obstacle" target_tilt="{shared_tilt}"/>
                                 <FollowTrajectory name="follow_trajectory" goal_input="{target_waypoint}"/>
                             </ReactiveSequence>
 
-                            <ReactToObstacle name="react_to_obstacle"/>
+                            <ReactToObstacle name="react_to_obstacle" target_tilt="{shared_tilt}"/>
 
                         </Fallback>
                         <WaitForNextTask name="wait_for_next_task"/>
