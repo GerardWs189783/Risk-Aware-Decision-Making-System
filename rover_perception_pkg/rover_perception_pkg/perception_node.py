@@ -20,17 +20,27 @@ import math
 class PerceptionNode(Node): 
     def __init__(self):
         super().__init__("perception_node")
+        self.cv_bridge_ = CvBridge()
         self.subscriber_ = self.create_subscription(Image,"/image_raw",
                             self.image_callback,qos_profile_sensor_data)
+        self.depth_sub = self.create_subscription(Image,'/camera/depth_image',
+                            self.depth_callback,10)
+        self.joint_sub_ = self.create_subscription(JointState,"/joint_states",
+                            self.joint_state_callback,10)
+
+
         self.publisher_ = self.create_publisher(PerceptionResultArray, "/perception/obstacle_info", 10)
         self.annotated_pub_ = self.create_publisher(Image, "/perception/annotated_image", 10)
-        self.cv_bridge_ = CvBridge()
+        
+        self.latest_depth_image = None
         self.pkg_path_ = get_package_share_directory('rover_perception_pkg')
+        
         self.model_path_ = os.path.join(self.pkg_path_,'weights','sim_to_real_alpha_best.pt')
         #self.model_ = YOLO("yolov8n.pt")
         self.model_ = YOLO(self.model_path_)
         self.detection_buffer = deque(maxlen=5) 
         self.is_rock_active = False
+        self.current_mast_angle = 0.0
         #<width>1280</width><height>720</height>
         # self.roi_x_min = 400
         # self.roi_x_max = 880
@@ -49,16 +59,6 @@ class PerceptionNode(Node):
         self.cam_vfov = 1.047
         self.cam_hfov = 1.396
 
-
-        #Adding lidar to the perception to determine the distance
-        self.latest_scan = None
-        self.scan_angle_min = 0.0
-        self.scan_angle_increment = 0.0
-        self.scan_sub_ = self.create_subscription(LaserScan, "/scan", self.scan_callback, qos_profile_sensor_data)
-
-        self.current_mast_angle = 0.0
-        self.joint_sub_ = self.create_subscription(JointState,"/joint_states",self.joint_state_callback,10)
-
     def image_callback(self, msg: Image):
         cv_image = self.cv_bridge_.imgmsg_to_cv2(msg, "bgr8")
         results = self.model_(cv_image, verbose=False)
@@ -76,60 +76,39 @@ class PerceptionNode(Node):
             # Only process rocks that are inside our Danger Zone ROI
             if self.if_in_danger_zone(cx, cy):
                 current_frame_danger = True
-                estimated_distance = 0.0 
                 
                 # 2. OX-Axis: Find the LiDAR distance (Horizontal Math)
-                if self.latest_scan is not None and self.scan_angle_increment > 0:
-                    theta_camera = -1.0 * ((cx - self.cam_center_x) / self.cam_center_x) * (self.cam_hfov / 2.0)
-                    phi_camera = ((cy - self.cam_center_y) / self.cam_center_y) * (self.cam_vfov / 2.0)
-                    center_index = int((theta_camera - self.scan_angle_min) / self.scan_angle_increment)
+                theta_camera = -1.0 * ((cx - self.cam_center_x) / self.cam_center_x) * (self.cam_hfov / 2.0)
+                phi_camera = ((cy - self.cam_center_y) / self.cam_center_y) * (self.cam_vfov / 2.0)
+                abs_phi_camera = phi_camera - self.current_mast_angle
 
-                    abs_phi_camera = phi_camera - self.current_mast_angle
+                estimated_distance = 0.0
+                valid_distance = False
+
+                if self.latest_depth_image is not None:
+                    # Define a 5x5 patch around the center
+                    patch_size = 2
+                    y_min = max(0, cy - patch_size)
+                    y_max = min(self.latest_depth_image.shape[0], cy + patch_size + 1)
+                    x_min = max(0, cx - patch_size)
+                    x_max = min(self.latest_depth_image.shape[1], cx + patch_size + 1)
                     
-                    start_idx = max(0, center_index - 3)
-                    end_idx = min(len(self.latest_scan), center_index + 4) 
+                    # Extract the 5x5 grid of depth values
+                    depth_patch = self.latest_depth_image[y_min:y_max, x_min:x_max]
                     
-                    window = self.latest_scan[start_idx:end_idx]
-                    valid_distances = [d for d in window if not math.isinf(d) and not math.isnan(d) and d > 0.0]
+                    # Flatten the patch and filter out NaNs, Infs, and zeroes
+                    valid_depths = depth_patch[np.isfinite(depth_patch) & (depth_patch > 0.0)]
                     
-                    if len(valid_distances) > 0:
-                        estimated_distance = min(valid_distances)
+                    if len(valid_depths) > 0:
+                        # Grab the MINIMUM value (the closest point of the rock facing the camera!)
+                        dist = np.min(valid_depths)
+                        estimated_distance = float(dist)
+                        valid_distance = True
 
-                # 3. OY-Axis: Evaluate Vertical Geometry (Vertical Math)
-                phi_top, phi_bottom, should_lidar_hit = self.mast_angle_range(cy, bbox_h)
-                
-                # 4. Determine Geometric Confidence Heuristics
-                #geometric_confidence = 1.0
-                #valid_distance = True
-
-                # if should_lidar_hit:
-                #     if estimated_distance == 0.0:
-                #         # CONTRADICTION: Math says LiDAR should hit, but we got no reading
-                #         #geometric_confidence = 0.1
-                #         valid_distance = False
-                #     else:
-                #         # CONFIRMED: Math says it should hit, and we got a valid distance
-                #         valid_distance = True
-                # else:
-                #     if estimated_distance > 0.0:
-                #         # CONTRADICTION: Math says LiDAR shoots over/under, but it hit something!
-                #         #geometric_confidence = 0.2
-                #         valid_distance = False
-                #     else:
-                #         # EXPECTED MISS: The rock is too short, LiDAR shot straight over it.
-                #         #geometric_confidence = 0.5 
-                #         valid_distance = False
-
-                if estimated_distance != 0.0 and should_lidar_hit:
-                    valid_distance = True
-                else:
-                    valid_distance = False    
-                        
                 # 5. Build the Custom ROS 2 Message for this specific rock
                 detected_rock = PerceptionResult()
                 detected_rock.class_name = self.model_.names[int(box.cls[0])]
                 detected_rock.confidence = float(box.conf[0])
-                #detected_rock.geometric_confidence = float(geometric_confidence)
                 detected_rock.valid_distance = bool(valid_distance)
                 detected_rock.bbox_center_x = int(cx)
                 detected_rock.bbox_center_y = int(cy)
@@ -165,39 +144,16 @@ class PerceptionNode(Node):
             return True
         return False
     
-    def scan_callback(self, msg: LaserScan):
-        self.latest_scan = msg.ranges
-        self.scan_angle_min = msg.angle_min
-        self.scan_angle_increment = msg.angle_increment
-
-    def mast_angle_range(self, cy: int, bbox_height: int) -> tuple[float, float, bool]:
-        """
-        Calculates the vertical angle (phi) to the top and bottom of the rock.
-        Returns: (phi_top, phi_bottom, is_lidar_intersecting)
-        """
-        # 1. Find the Y pixels for the top and bottom of the bounding box
-        y_top = cy - (bbox_height / 2.0)
-        y_bottom = cy + (bbox_height / 2.0)
-
-        # 2. Convert pixels to vertical angles (phi)
-        # Assuming camera Y goes from 0 (top) to 720 (bottom)
-        # Negative phi means looking UP relative to camera center, Positive means looking DOWN.
-        phi_top = ((y_top - self.cam_center_y) / self.cam_center_y) * (self.cam_vfov / 2.0)
-        phi_bottom = ((y_bottom - self.cam_center_y) / self.cam_center_y) * (self.cam_vfov / 2.0)
-
-        # 3. Geometric Confidence Check
-        # If the mast is currently at 0.0 tilt, the LiDAR beam shoots at phi = 0.0.
-        # Does 0.0 fall inside the rock's vertical profile?
-        is_lidar_intersecting = (phi_top <= 0.0 <= phi_bottom)
-
-        # The required mast angles to scan this rock are exactly the inverse of the phi angles.
-        return phi_top, phi_bottom, is_lidar_intersecting
-    
     def joint_state_callback(self, msg: JointState):
-        camera_pitch = 'mast_camera_joint' 
+        camera_pitch = 'mast_cameras_joint' 
         if camera_pitch in msg.name:
             idx = msg.name.index(camera_pitch)
             self.current_mast_angle = msg.position[idx]
+
+    def depth_callback(self, msg):
+    # Convert the ROS Image message to an OpenCV numpy array (32-bit floats)
+    # Each pixel value is literally the distance in meters!
+        self.latest_depth_image = self.cv_bridge_.imgmsg_to_cv2(msg, desired_encoding='passthrough')
 
 def main(args=None):
     rclpy.init(args=args)

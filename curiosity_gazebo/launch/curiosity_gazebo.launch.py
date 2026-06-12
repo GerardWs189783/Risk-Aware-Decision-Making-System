@@ -120,14 +120,28 @@ def generate_launch_description():
             "/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
             "/model/curiosity_mars_rover/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry",
             "/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan",
+            # NEW: Bridge the 3D Point Cloud and Camera Info
+            "/camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked",
+            "/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
         ],
         output="screen",
     )
 
+    # image_bridge = Node(
+    #     package="ros_gz_image",
+    #     executable="image_bridge",
+    #     arguments=["/image_raw", "/image_raw"],
+    #     output="screen",
+    # )
     image_bridge = Node(
         package="ros_gz_image",
         executable="image_bridge",
-        arguments=["/image_raw", "/image_raw"],
+        # NEW: Bridge the standard image AND the depth image
+        arguments=["/camera/image", "/camera/depth_image"],
+        # NEW: Remap /camera/image back to /image_raw so YOLO doesn't break!
+        remappings=[
+            ('/camera/image', '/image_raw')
+        ],
         output="screen",
     )
 

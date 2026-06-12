@@ -183,7 +183,9 @@
   </gazebo>
 
   <gazebo reference="camera_link">
-    <sensor type="camera" name="camera_sensor">
+    <sensor type="rgbd_camera" name="camera_sensor">
+      <topic>camera</topic>
+      <gz_frame_id>camera_optical_frame</gz_frame_id> 
       <visualize>1</visualize>
       <update_rate>10.0</update_rate>
       <camera>
@@ -205,7 +207,6 @@
         </noise>
       </camera>
       <always_on>1</always_on>
-      <topic>image_raw</topic>
     </sensor>
   </gazebo>
 
