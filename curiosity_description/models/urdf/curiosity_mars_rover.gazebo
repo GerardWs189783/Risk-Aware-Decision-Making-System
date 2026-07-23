@@ -130,7 +130,7 @@
 
 
   </ros2_control>
-
+<!-- Very important to match the time!!! -->
   <gazebo>
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <robot_param>robot_description</robot_param>
@@ -139,9 +139,9 @@
     </plugin>
 
     <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
-      <odom_frame>/odom</odom_frame>
-      <robot_base_frame>/base_footprint</robot_base_frame>
-      <odom_publish_frequency>10</odom_publish_frequency>
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_publish_frequency>50</odom_publish_frequency>
     </plugin>
 
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">

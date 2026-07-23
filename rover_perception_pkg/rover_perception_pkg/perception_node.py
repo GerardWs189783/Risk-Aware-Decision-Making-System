@@ -36,7 +36,6 @@ class PerceptionNode(Node):
         self.pkg_path_ = get_package_share_directory('rover_perception_pkg')
         
         self.model_path_ = os.path.join(self.pkg_path_,'weights','sim_to_real_alpha_best.pt')
-        #self.model_ = YOLO("yolov8n.pt")
         self.model_ = YOLO(self.model_path_)
         self.detection_buffer = deque(maxlen=5) 
         self.is_rock_active = False
@@ -64,20 +63,20 @@ class PerceptionNode(Node):
         results = self.model_(cv_image, verbose=False)
         
         current_frame_danger = False
-        array_perception_msg = PerceptionResultArray()
+        array_perception_msg = PerceptionResultArray() # class for saving all of the rock detection
         
         for box in results[0].boxes:
-            # 1. Extract raw YOLO data (Cast to standard Python types to prevent ROS serialization errors)
+            # extracting data from yolo detection (bbox paraemetrs)
             cx = int(box.xywh[0][0])
             cy = int(box.xywh[0][1])
             bbox_w = int(box.xywh[0][2])
             bbox_h = int(box.xywh[0][3])
             
-            # Only process rocks that are inside our Danger Zone ROI
+            # only rocks inside the ROI danger_zone are processed
             if self.if_in_danger_zone(cx, cy):
                 current_frame_danger = True
                 
-                # 2. OX-Axis: Find the LiDAR distance (Horizontal Math)
+                # calculation of theta and phi camera angles for further c
                 theta_camera = -1.0 * ((cx - self.cam_center_x) / self.cam_center_x) * (self.cam_hfov / 2.0)
                 phi_camera = ((cy - self.cam_center_y) / self.cam_center_y) * (self.cam_vfov / 2.0)
                 abs_phi_camera = phi_camera - self.current_mast_angle
@@ -86,40 +85,42 @@ class PerceptionNode(Node):
                 valid_distance = False
 
                 if self.latest_depth_image is not None:
-                    # Define a 5x5 patch around the center
+                    # 5x5 patch around the center
                     patch_size = 2
                     y_min = max(0, cy - patch_size)
                     y_max = min(self.latest_depth_image.shape[0], cy + patch_size + 1)
                     x_min = max(0, cx - patch_size)
                     x_max = min(self.latest_depth_image.shape[1], cx + patch_size + 1)
                     
-                    # Extract the 5x5 grid of depth values
+                    # 5x5 grid of depth values
                     depth_patch = self.latest_depth_image[y_min:y_max, x_min:x_max]
                     
-                    # Flatten the patch and filter out NaNs, Infs, and zeroes
+                    # filtration from NanN and zero values
                     valid_depths = depth_patch[np.isfinite(depth_patch) & (depth_patch > 0.0)]
                     
                     if len(valid_depths) > 0:
-                        # Grab the MINIMUM value (the closest point of the rock facing the camera!)
+                        # distance extractio, getting the closest distance between rock and camera
                         dist = np.min(valid_depths)
+                        # saving the distance for ROS message
                         estimated_distance = float(dist)
+                        # distance validate flag
                         valid_distance = True
 
-                # 5. Build the Custom ROS 2 Message for this specific rock
-                detected_rock = PerceptionResult()
-                detected_rock.class_name = self.model_.names[int(box.cls[0])]
-                detected_rock.confidence = float(box.conf[0])
-                detected_rock.valid_distance = bool(valid_distance)
-                detected_rock.bbox_center_x = int(cx)
-                detected_rock.bbox_center_y = int(cy)
-                detected_rock.distance_meters = float(estimated_distance)
-                detected_rock.phi_angle = float(abs_phi_camera)
-                detected_rock.theta_angle = float(theta_camera)
+                # custom ROS 2 message for the current rock
+                detected_rock = PerceptionResult() # every rock is the PerceptionResult class for ROS2 msg
+                detected_rock.class_name = self.model_.names[int(box.cls[0])] # class rock
+                detected_rock.confidence = float(box.conf[0]) # confidence score
+                detected_rock.valid_distance = bool(valid_distance) # valid distance flag
+                detected_rock.bbox_center_x = int(cx) # x coordinate of center of the rock
+                detected_rock.bbox_center_y = int(cy) # y coordinate of center of the rock
+                detected_rock.distance_meters = float(estimated_distance) # estimated distance to the rock from RGBD camera
+                detected_rock.phi_angle = float(abs_phi_camera) # phi_angle pitch of the rover
+                detected_rock.theta_angle = float(theta_camera) # theta_angle yaw of the rover
                 
-                # Add it to the array
+                # every detected rock is then added to the array of the detected rock PerceptionResultArray
                 array_perception_msg.detections.append(detected_rock)
 
-        # 6. Temporal Hysteresis Filter (Prevents flickering)
+        # implementation of temporal Hysteresis Filter -> to avoid sending and then processing one tick ghost rocks (filter)
         self.detection_buffer.append(current_frame_danger)
         true_count = sum(self.detection_buffer)
 
@@ -128,22 +129,23 @@ class PerceptionNode(Node):
         elif self.is_rock_active and (true_count == 0):
             self.is_rock_active = False            
 
-        # 7. Finalize and Publish to the Behavior Tree
+        # After filtering, the rock is send to the array of confirmed rocks
         array_perception_msg.obstacle_detected = self.is_rock_active
         self.publisher_.publish(array_perception_msg)
         
-        # Publish the annotated debug image
+        # publish to ROS topic
         annotated_frame = results[0].plot()
         annotated_msg = self.cv_bridge_.cv2_to_imgmsg(annotated_frame, "bgr8")
         self.annotated_pub_.publish(annotated_msg)
 
+    # drawing the ROI polygon
     def if_in_danger_zone(self, bbox_center_x: int, bbox_center_y: int):
         # check if bbox center is inside roi
         result = cv2.pointPolygonTest(self.roi_polygon, (bbox_center_x, bbox_center_y), False)
         if result >= 0:
             return True
         return False
-    
+    # ROS callback to obtain current pitch value of the camera mast
     def joint_state_callback(self, msg: JointState):
         camera_pitch = 'mast_cameras_joint' 
         if camera_pitch in msg.name:
@@ -151,8 +153,8 @@ class PerceptionNode(Node):
             self.current_mast_angle = msg.position[idx]
 
     def depth_callback(self, msg):
-    # Convert the ROS Image message to an OpenCV numpy array (32-bit floats)
-    # Each pixel value is literally the distance in meters!
+    # convert the ROS Img msg to an OpenCV numpy array
+    # every ixel value is the distance in meters
         self.latest_depth_image = self.cv_bridge_.imgmsg_to_cv2(msg, desired_encoding='passthrough')
 
 def main(args=None):
