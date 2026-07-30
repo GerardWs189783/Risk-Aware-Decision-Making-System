@@ -70,14 +70,17 @@ private:
     // neccessary tf2 objects for odometry
     std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+    
+    int publish_counter_ = 0;
     // Memory for coordinates of rocks
-    std::vector<std::pair<double, double>> confirmed_obstacles_;
+    std::shared_ptr<std::vector<std::pair<double, double>>> confirmed_obstacles_;
     const double MAST_HEIGHT = 1.236;
     bool is_path_blocked_ = false;
 
 public:
-    CheckObstacle(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
-        : BT::ConditionNode(name, config), perception_check_node_(ros_node) 
+    CheckObstacle(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node,
+        std::shared_ptr<std::vector<std::pair<double, double>>> shared_memory) 
+        : BT::ConditionNode(name, config), perception_check_node_(ros_node), confirmed_obstacles_(shared_memory)
     {
         // init TF2
         tf_buffer_ = std::make_shared<tf2_ros::Buffer>(perception_check_node_->get_clock());
@@ -89,7 +92,7 @@ public:
             "/perception/obstacle_info", 10,
             [this](const rover_interfaces::msg::PerceptionResultArray::SharedPtr msg) {
                 this->last_msg_ = msg;
-            });
+            });   
     }
 
     static BT::PortsList providedPorts() 
@@ -106,6 +109,38 @@ public:
 
     // Computation of this Obstacle check node
     BT::NodeStatus tick() override {
+        //Prevention of missing the data
+        if (!confirmed_obstacles_->empty()) {
+            publish_counter_++;
+            
+            // Only publish every 10th tick
+            if (publish_counter_ >= 10) {
+                auto cloud = sensor_msgs::msg::PointCloud2();
+                cloud.header.frame_id = "odom"; 
+                cloud.header.stamp = perception_check_node_->now();
+
+                sensor_msgs::PointCloud2Modifier modifier(cloud);
+                modifier.setPointCloud2FieldsByString(1, "xyz");
+                modifier.resize(confirmed_obstacles_->size());
+
+                sensor_msgs::PointCloud2Iterator<float> iter_x(cloud, "x");
+                sensor_msgs::PointCloud2Iterator<float> iter_y(cloud, "y");
+                sensor_msgs::PointCloud2Iterator<float> iter_z(cloud, "z");
+
+                for (const auto& obs : *confirmed_obstacles_) {
+                    *iter_x = static_cast<float>(obs.first);
+                    *iter_y = static_cast<float>(obs.second);
+                    *iter_z = 0.0f;
+                    ++iter_x; ++iter_y; ++iter_z;
+                }
+                point_cloud_pub_->publish(cloud);
+                
+                // Reset counter after publishing
+                publish_counter_ = 0; 
+            }
+        }
+
+
         if (!last_msg_ || !last_msg_->obstacle_detected) {
             return BT::NodeStatus::SUCCESS;
         }
@@ -131,29 +166,9 @@ public:
                 double global_x = point_odom.point.x;
                 double global_y = point_odom.point.y;
 
-                // ========================================================
-                // PLATT SCALING (CALIBRATED PROBABILITY) (not utilised in classic implementation) (Every obstacle is treated as the truth)
-                // ========================================================
-                double raw_confidence = rock.confidence; 
-                
-                double eps = 1e-7;
-                double conf_clipped = std::max(eps, std::min(1.0 - eps, raw_confidence));
-                double logit = std::log(conf_clipped / (1.0 - conf_clipped));
-
-                // Logistic Regression Sigmoid Parameters
-                double A = 1.68825; 
-                double B = 0.02879;
-
-                // Calibrated Probability (P_obstacle)
-                double p_obstacle = 1.0 / (1.0 + std::exp(-(A * logit + B))); 
-                // log to compare the confidence score to P_obstacle
-                std::cout << "\033[1;34m[Math] YOLO: " << raw_confidence 
-                          << " -> P_obs: " << p_obstacle << "\033[0m\n";
-                // ========================================================
-
                 // Check if the rock found was already processed
                 bool already_known = false;
-                for (const auto& known : confirmed_obstacles_) {
+                for (const auto& known : *confirmed_obstacles_) {
                     if (std::hypot(global_x - known.first, global_y - known.second) < 0.75) { 
                         already_known = true; break; 
                     }
@@ -167,7 +182,7 @@ public:
                         // PLANNING ZONE (> 3.0m)
                         // Adds the rock to the point cloud for the navigation to include it in path planning and actuation
                         std::cout << "\033[1;36m[BT] Planning Zone Rock mapped at (X: " << global_x << ", Y: " << global_y << ")\033[0m\n";
-                        confirmed_obstacles_.push_back({global_x, global_y});
+                        confirmed_obstacles_->push_back({global_x, global_y});
                         publishSemanticMap();
                     } 
                     else if (rock.distance_meters > 10.0)
@@ -191,7 +206,7 @@ public:
                         setOutput("target_yaw", rock.theta_angle);
                         setOutput("target_distance", rock.distance_meters);
                         // push to the map the obstacle
-                        confirmed_obstacles_.push_back({global_x, global_y});
+                        confirmed_obstacles_->push_back({global_x, global_y});
                         publishSemanticMap();
                         
                         trigger_inspection = true;
@@ -219,13 +234,13 @@ public:
 
         sensor_msgs::PointCloud2Modifier modifier(cloud);
         modifier.setPointCloud2FieldsByString(1, "xyz");
-        modifier.resize(confirmed_obstacles_.size());
+        modifier.resize(confirmed_obstacles_->size());
 
         sensor_msgs::PointCloud2Iterator<float> iter_x(cloud, "x");
         sensor_msgs::PointCloud2Iterator<float> iter_y(cloud, "y");
         sensor_msgs::PointCloud2Iterator<float> iter_z(cloud, "z");
 
-        for (const auto& obs : confirmed_obstacles_) {
+        for (const auto& obs : *confirmed_obstacles_) {
             *iter_x = static_cast<float>(obs.first);
             *iter_y = static_cast<float>(obs.second);
             *iter_z = 0.0f;
@@ -247,7 +262,7 @@ private:
     rclcpp::Client<std_srvs::srv::Empty>::SharedPtr brake_client_;
 // dictionary of the waypoints (for now)
     std::map<std::string,std::pair<double,double>> waypoints_ {
-        {"Waypoint_Alpha", {5.0, 0.0}},
+        {"Waypoint_Alpha", {30.0, -19.0}},
         {"Waypoint_Beta", {10.0, -2.5}}
     };
 
@@ -391,7 +406,7 @@ public:
 // React to Obstacle
 class ReactToObstacle : public BT::StatefulActionNode {
 private:
-// joint sub and pub to react according to the zone
+    // joint sub and pub to react according to the zone
     rclcpp::Node::SharedPtr ros_node_;
     rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr joint_pub_;
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_sub_;
@@ -400,6 +415,17 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_sub_;
 
     rclcpp::Time scan_start_time_;
+    rclcpp::Time movement_start_time_;
+
+    // relocation of obstacle possible
+
+    std::shared_ptr<std::vector<std::pair<double, double>>> confirmed_obstacles_;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_pub_;
+    std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+    std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+
+    double original_target_yaw_ = 0.0; // original relative yaw for math
+    double refined_distance_ = 0.0;    // distance measured by LiDAR
 
     double current_mast_p_ = 0.0;    // Joint 1
     double current_yaw_ = 0.0;       // Joint 2 (mast_02_joint) YAW
@@ -414,25 +440,50 @@ private:
     bool lidar_hit_confirmed_ = false; // if the lidar hit the rock
     const std::string topic_name = "/mast_joint_trajectory_controller/joint_trajectory"; // topic for traj control to send the desired joint angle
 
+    //republish to point cloud
+
+    void publishSemanticMap() {
+        auto cloud = sensor_msgs::msg::PointCloud2();
+        cloud.header.frame_id = "odom";
+        cloud.header.stamp = ros_node_->now();
+
+        sensor_msgs::PointCloud2Modifier modifier(cloud);
+        modifier.setPointCloud2FieldsByString(1, "xyz");
+        modifier.resize(confirmed_obstacles_->size());
+
+        sensor_msgs::PointCloud2Iterator<float> iter_x(cloud, "x");
+        sensor_msgs::PointCloud2Iterator<float> iter_y(cloud, "y");
+        sensor_msgs::PointCloud2Iterator<float> iter_z(cloud, "z");
+
+        for (const auto& obs : *confirmed_obstacles_) {
+            *iter_x = static_cast<float>(obs.first);
+            *iter_y = static_cast<float>(obs.second);
+            *iter_z = 0.0f;
+            ++iter_x; ++iter_y; ++iter_z;
+        }
+        cloud.header.stamp = ros_node_->now();
+        point_cloud_pub_->publish(cloud);
+    }
+
 public:
-    ReactToObstacle(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
-            : BT::StatefulActionNode(name, config), ros_node_(ros_node)
+    ReactToObstacle(const std::string& name, const BT::NodeConfig& config, 
+                    rclcpp::Node::SharedPtr ros_node,
+                    std::shared_ptr<std::vector<std::pair<double, double>>> shared_memory) 
+            : BT::StatefulActionNode(name, config), ros_node_(ros_node), confirmed_obstacles_(shared_memory)
     {
-        // create pub and sub
         joint_pub_ = ros_node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(topic_name, 10);
+        point_cloud_pub_ = ros_node_->create_publisher<sensor_msgs::msg::PointCloud2>("/semantic_obstacles", 10);
+        
+        tf_buffer_ = std::make_shared<tf2_ros::Buffer>(ros_node_->get_clock());
+        tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
         joint_sub_ = ros_node_->create_subscription<sensor_msgs::msg::JointState>(
             "/joint_states", 10,
-            [this](const sensor_msgs::msg::JointState::SharedPtr msg) 
-            {
+            [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
                 for (size_t i = 0; i < msg->name.size(); ++i) {
-                    if (msg->name[i] == "mast_p_joint") {
-                        this->current_mast_p_ = msg->position[i];
-                    } else if (msg->name[i] == "mast_02_joint") {
-                        this->current_yaw_ = msg->position[i];       // YAW
-                    } else if (msg->name[i] == "mast_cameras_joint") {
-                        this->current_tilt_ = msg->position[i];      // PITCH
-                    }
+                    if (msg->name[i] == "mast_p_joint") this->current_mast_p_ = msg->position[i];
+                    else if (msg->name[i] == "mast_02_joint") this->current_yaw_ = msg->position[i];       
+                    else if (msg->name[i] == "mast_cameras_joint") this->current_tilt_ = msg->position[i];      
                 }
             });
 
@@ -441,28 +492,36 @@ public:
             "/scan", rclcpp::SensorDataQoS(),
             [this](const sensor_msgs::msg::LaserScan::SharedPtr msg) {
                 
-                // to check if the target tilt was reached
                 if (this->waiting_for_scan_ && !this->lidar_hit_confirmed_) {
-                    
-                    // laser scan of the rock only with the center laser -> so the lidar centered to the rock
                     int center_idx = msg->ranges.size() / 2;
-                    
-                    // narrow window of rays
                     int search_window = 20; 
                     int start_idx = std::max(0, center_idx - search_window);
                     int end_idx = std::min((int)msg->ranges.size(), center_idx + search_window);
 
-                    // check the center ray
+                    double best_match_diff = 0.4; // Strict 0.4m tolerance
+                    bool found_better_match = false;
+                    double best_range = 0.0;
+
                     for (int i = start_idx; i < end_idx; i++) {
                         float range = msg->ranges[i];
                         
                         if (!std::isinf(range) && !std::isnan(range) && range > 0.1) {
-                            // if the distance of LIDAR scan does not match the distance of RGBD (with tolerence 0.4 m) then the actuation is still to be goin for the tilt
-                            if (std::abs(range - this->expected_distance_) < 0.4) {
-                                this->lidar_hit_confirmed_ = true;
-                                break;
+                            // Find how close this LiDAR ray is to the Camera's distance
+                            double diff = std::abs(range - this->expected_distance_);
+                            
+                            // Keep the ray that most perfectly matches the camera's estimate
+                            if (diff < best_match_diff) {
+                                best_match_diff = diff;
+                                best_range = range;
+                                found_better_match = true;
                             }
                         }
+                    }
+
+                    // If we found a valid ray in the window, confirm the hit
+                    if (found_better_match) {
+                        this->lidar_hit_confirmed_ = true;
+                        this->refined_distance_ = best_range; 
                     }
                 }
             });
@@ -481,19 +540,19 @@ public:
     {
         //check if the variable of Blackboard are assigned correctly
         double target_tilt = 0.0;
-        double target_yaw = 0.0;
         if (!getInput("target_tilt", target_tilt) || 
-            !getInput("target_yaw", target_yaw) || 
+            !getInput("target_yaw", original_target_yaw_) || 
             !getInput("target_distance", expected_distance_)) {
             RCLCPP_WARN(ros_node_->get_logger(),"Missing BT variables!");
             return BT::NodeStatus::FAILURE;
         }
+        expected_distance_ = std::max(0.1, expected_distance_);
         // needed to be included for the mast tilt. If very close the tilt correction will be bigger is further it will be small
         double lidar_height_offset = 0.325;
         double parallax_correction = std::atan(lidar_height_offset / expected_distance_);
         //final target pitch (tilt) and yaw for he action of active perception checking
         target_tilt_absolute_ = current_tilt_+ target_tilt + parallax_correction;
-        target_yaw_absolute_ = current_yaw_ + target_yaw;
+        target_yaw_absolute_ = current_yaw_ + original_target_yaw_;
 
         std::cout << "\033[1;35m[BT] -> FALLBACK: Panning to " << target_yaw_absolute_ 
                   << " rads, and Tilting to " << target_tilt_absolute_ << " ...\033[0m\n";
@@ -502,43 +561,73 @@ public:
         is_looking_down_ = true;
         waiting_for_scan_ = false;
         lidar_hit_confirmed_ = false; // Reset the laser flag
-
+        movement_start_time_ = ros_node_->now();
         return BT::NodeStatus::RUNNING;
     }
 
     BT::NodeStatus onRunning() override 
     {
         // yaw and pitch reached with a tolerence
-        if (is_looking_down_ && !waiting_for_scan_ && 
-            std::abs(current_tilt_ - target_tilt_absolute_) < 0.05 &&
-            std::abs(current_yaw_ - target_yaw_absolute_) < 0.05) {
+        bool target_reached = (std::abs(current_tilt_ - target_tilt_absolute_) < 0.05 &&
+                               std::abs(current_yaw_ - target_yaw_absolute_) < 0.05);
+        bool movement_timeout = (ros_node_->now() - movement_start_time_).seconds() > 4.0;
+
+        if (is_looking_down_ && !waiting_for_scan_ && (target_reached || movement_timeout)) {
             
-            std::cout << "\033[1;36m[BT] -> FALLBACK: Target reached. Waiting for LiDAR strike...\033[0m\n";
-            waiting_for_scan_ = true; // Waiting for scan
-            scan_start_time_ = ros_node_->now(); //measure time from gazebo (to handle the time, for critical action needed)
+            if (movement_timeout) {
+                std::cout << "\033[1;33m[BT] -> FALLBACK: Mast movement timeout! Scanning anyway...\033[0m\n";
+            } else {
+                std::cout << "\033[1;36m[BT] -> FALLBACK: Target reached. Waiting for LiDAR strike...\033[0m\n";
+            }
+            
+            waiting_for_scan_ = true; 
+            scan_start_time_ = ros_node_->now(); 
             return BT::NodeStatus::RUNNING;
         }
 
         // LIDAR scan the rock, if waiting_for_scan true then the system waits for the lidar to scan (by the time the yaw and pitch will be reached)
         if (waiting_for_scan_) {
-
             if (lidar_hit_confirmed_) {
-                std::cout << "\033[1;35m[BT] -> FALLBACK: LiDAR Strike Confirmed! Resetting Mast...\033[0m\n";
+                std::cout << "\033[1;35m[BT] -> FALLBACK: LiDAR Strike! Relocating rock on map...\033[0m\n";
+                
+                // ACTIVE PERCEPTION RELOCATION
+                // Because the mast is currently pointing directly at the rock, 
+                // the rock lies straight ahead on the camera_link's X-axis!
+                geometry_msgs::msg::PointStamped point_sensor;
+                point_sensor.header.frame_id = "camera_link"; 
+                point_sensor.header.stamp = rclcpp::Time(0); // Get the rotated mast TF
+                point_sensor.point.x = refined_distance_;    // Straight ahead
+                point_sensor.point.y = 0.0;                  // Perfectly centered
+                point_sensor.point.z = 0.0;
+
+                try {
+                    // TF2 automatically accounts for the mast's current yaw and tilt!
+                    auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.0));
+                    
+                    if (!confirmed_obstacles_->empty()) {
+                        confirmed_obstacles_->back().first = point_odom.point.x;
+                        confirmed_obstacles_->back().second = point_odom.point.y;
+                        
+                        // Republish map with highly accurate coordinate
+                        publishSemanticMap();
+                    }
+                } catch (const tf2::TransformException & ex) {
+                    RCLCPP_WARN(ros_node_->get_logger(), "TF2 Error during relocation: %s", ex.what());
+                }
+
                 publishMastCommand(0.0, 0.0); 
                 waiting_for_scan_ = false;
                 is_looking_down_ = false;
             } 
-            // timeout
             else if ((ros_node_->now() - scan_start_time_).seconds() > 3.0) { 
                 std::cout << "\033[1;33m[BT] -> FALLBACK: LiDAR missed the target (Timeout). Resetting...\033[0m\n";
-                publishMastCommand(0.0, 0.0); // After the correct obstacle scan, command to reset the tilt
+                publishMastCommand(0.0, 0.0); 
                 waiting_for_scan_ = false;
                 is_looking_down_ = false;
             }
             return BT::NodeStatus::RUNNING;
         }
         
-        // waiting for mast to reset its angles
         if (!is_looking_down_ && !waiting_for_scan_ && 
             std::abs(current_tilt_) < 0.03 && 
             std::abs(current_yaw_) < 0.03) {
@@ -551,20 +640,18 @@ public:
     }
 
     void onHalted() override {
-        publishMastCommand(0.0, 0.0); // Safety reset both joints
+        publishMastCommand(0.0, 0.0); 
     }
-    // function to publish MAST joint positions to the controller
+    
     void publishMastCommand(double yaw_angle, double tilt_angle) {
         trajectory_msgs::msg::JointTrajectory traj_msg;
         traj_msg.joint_names = {"mast_p_joint", "mast_02_joint", "mast_cameras_joint"};
         trajectory_msgs::msg::JointTrajectoryPoint point;
         
-        // joints of the camera second and third are pitch, yaw
         point.positions = {current_mast_p_, yaw_angle, tilt_angle}; 
-        
         point.time_from_start.sec = 1; 
         traj_msg.points.push_back(point);
-        joint_pub_->publish(traj_msg); // publish the joint angles
+        joint_pub_->publish(traj_msg); 
     }
 };
 // Wait For Next Task
@@ -583,26 +670,26 @@ int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
     auto ros_node = std::make_shared<rclcpp::Node>("bt_autonomy_node");
-
+    ros_node->set_parameter(rclcpp::Parameter("use_sim_time", true));
     BT::BehaviorTreeFactory factory;
     // defining the nodes
     factory.registerNodeType<CheckMissionObjective>("CheckMissionObjective");
     factory.registerNodeType<ExecuteTask>("ExecuteTask");
     factory.registerNodeType<WaitForNextTask>("WaitForNextTask");
-
+    auto shared_memory = std::make_shared<std::vector<std::pair<double, double>>>();
 
 
     // Register node
 
-    BT::NodeBuilder builder_check_obstacle = [ros_node](const std::string& name, const BT::NodeConfig& config) {
-        return std::make_unique<CheckObstacle>(name, config, ros_node);
-    };
-    factory.registerBuilder<CheckObstacle>("CheckObstacle", builder_check_obstacle);
+    factory.registerBuilder<CheckObstacle>("CheckObstacle", 
+        [ros_node, shared_memory](const std::string& name, const BT::NodeConfig& config) {
+            return std::make_unique<CheckObstacle>(name, config, ros_node, shared_memory);
+        });
 
-    BT::NodeBuilder builder_react_to_obstacle = [ros_node](const std::string& name, const BT::NodeConfig& config) {
-        return std::make_unique<ReactToObstacle>(name, config, ros_node);
-    };
-    factory.registerBuilder<ReactToObstacle>("ReactToObstacle", builder_react_to_obstacle);
+    factory.registerBuilder<ReactToObstacle>("ReactToObstacle", 
+        [ros_node, shared_memory](const std::string& name, const BT::NodeConfig& config) {
+            return std::make_unique<ReactToObstacle>(name, config, ros_node, shared_memory);
+        });
 
     BT::NodeBuilder builder_follow_traj = [ros_node](const std::string& name, const BT::NodeConfig& config) {
         return std::make_unique<FollowTrajectory>(name, config, ros_node);
@@ -614,15 +701,15 @@ int main(int argc, char **argv)
 
     auto tree = factory.createTreeFromFile(xml_path);
     std::cout << "--- Behavior Tree Started ---" << std::endl;
-    // IMPORTANT TO USE THE SIMULATION TIME AS REFERENCE FOR ACTIONS NOT THE COMPUTER TIME!!!!
-    ros_node->set_parameter(rclcpp::Parameter("use_sim_time", true));
 
     auto sleep_time = rclcpp::Duration::from_seconds(0.1);
+    
+    rclcpp::Rate rate(10.0); 
     
     while (rclcpp::ok()) {
         rclcpp::spin_some(ros_node);
         tree.tickExactlyOnce();      
-        ros_node->get_clock()->sleep_for(sleep_time);
+        rate.sleep(); 
     }
 
     rclcpp::shutdown();

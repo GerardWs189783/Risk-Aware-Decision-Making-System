@@ -587,7 +587,6 @@ public:
     FollowTrajectory(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
         : BT::StatefulActionNode(name, config), ros_node_(ros_node) 
     {
-        // Only Nav2 client needed now. Brake client removed!
         nav_pose_client_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(ros_node_, "/navigate_to_pose");
     }    
     
@@ -679,7 +678,7 @@ public:
     }
 
     void onHalted() override {
-        // Only responsible for cleaning up Nav2. EmergencyStop node handles the motors!
+        // cleaning up Nav2.
         std::cout << "\033[1;33m[BT] FollowTrajectory Halted! Canceling Nav2 Goal...\033[0m\n";
         
         if (nav_pose_client_ && goal_handle_) {

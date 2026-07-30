@@ -13,7 +13,7 @@ global_costmap:
       footprint: "[ [2.341, 1.469], [-1.841, 1.469], [-1.841, -1.469], [2.341, -1.469] ]"
       footprint_padding: 0.15
       use_sim_time: True
-      resolution: 0.05
+      resolution: 0.1
       track_unknown_space: true
       width: 100
       height: 100
@@ -46,7 +46,7 @@ global_costmap:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 5.0
+      update_frequency: 3.0
       publish_frequency: 2.0
       global_frame: odom
       robot_base_frame: base_link # robot base link connection to the map
@@ -56,7 +56,7 @@ local_costmap:
       rolling_window: true # moving map with rover
       width: 10
       height: 10
-      resolution: 0.05
+      resolution: 0.1
       plugins: ["obstacle_layer", "inflation_layer"]
       
       obstacle_layer:
@@ -89,7 +89,7 @@ bt_navigator:
 controller_server:
   ros__parameters:
     use_sim_time: True
-    controller_frequency: 50.0
+    controller_frequency: 10.0
     progress_checker_plugin: "progress_checker"
     goal_checker_plugin: "goal_checker"
     controller_plugins: ["FollowPath"]
@@ -190,7 +190,7 @@ docking_server:
 velocity_smoother:
   ros__parameters:
     use_sim_time: True
-    smoothing_frequency: 20.0
+    smoothing_frequency: 10.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
     max_velocity: [2.0, 0.0, 1.0]   # [x, y, theta] rover cant move sideways so v_y=0

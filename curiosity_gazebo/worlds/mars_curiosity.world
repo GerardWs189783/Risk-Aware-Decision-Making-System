@@ -2326,6 +2326,12 @@
       <pose>0 -0.7 -8.8 0 0 0</pose>
     </include>
 
+    <physics name="fast_physics" type="ignored">
+    <max_step_size>0.002</max_step_size>
+    <real_time_factor>1.0</real_time_factor>
+    <real_time_update_rate>500</real_time_update_rate>
+  </physics>
+
   </world>
 </sdf>
 
