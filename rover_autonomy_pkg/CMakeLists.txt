@@ -18,6 +18,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(action_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -28,10 +29,15 @@ ament_target_dependencies(bt_test rclcpp behaviortree_cpp)
 add_executable(autonomy_node src/autonomy_node.cpp)
 ament_target_dependencies(autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs rclcpp_action action_msgs std_srvs)
 
+add_executable(risk_autonomy_node src/risk_autonomy_node.cpp)
+ament_target_dependencies(risk_autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+
 # Install node
 install(TARGETS 
 bt_test 
 autonomy_node
+risk_autonomy_node
 DESTINATION lib/${PROJECT_NAME}
 )
 

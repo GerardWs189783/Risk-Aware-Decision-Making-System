@@ -253,7 +253,7 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+<!--
     <model name='falling_rock5_1'>
       <link name='base_link'>
         <inertial>
@@ -361,7 +361,7 @@
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+-->
     <model name='falling_rock4'>
       <link name='base_link'>
         <inertial>
@@ -411,7 +411,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>8.2887751227911211 -13.2013384598121792 -8.8995938566635591 -2.8355374514672893 1.70513863270833776 -1.2312888262933208</pose>
+      <pose>8.2887751227911211 -13.2013384598121792 -8.1995938566635591 -2.8355374514672893 1.70513863270833776 -1.2312888262933208</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -465,7 +465,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>0.85948435333739137 6.885587761039913 -7.1694901096844115 -3.023926765738596 0.74590577254453394 -1.9851557269240956</pose>
+      <pose>0.85948435333739137 6.885587761039913 -8.5 -3.023926765738596 0.74590577254453394 -1.9851557269240956</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -519,11 +519,11 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-10.98642245963971 8.9135390061346396 -6.572273176008653 3.0569905565799873 -0.66060238568070162 -2.0669918296422281</pose>
+      <pose>-10.98642245963971 8.9135390061346396 -8.8 3.0569905565799873 -0.66060238568070162 -2.0669918296422281</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+<!--
     <model name='falling_rock4_2'>
       <link name='base_link'>
         <inertial>
@@ -573,11 +573,11 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-38 8.9135390061346396 -4.5 -8 -0.66060238568070162 -2.0669918296422281</pose>
+      <pose>-38 8.9135390061346396 -8.5 -8 -0.66060238568070162 -2.0669918296422281</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+-->
     <model name='falling_rock3'>
       <link name='base_link'>
         <inertial>
@@ -627,7 +627,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>11.977643194659095 8.3119342965187109 -7.5320744693678394 1.6065246671699842 -0.59592331294122081 -2.9029442064777213</pose>
+      <pose>11.977643194659095 8.3119342965187109 -8.4 1.6065246671699842 -0.59592331294122081 -2.9029442064777213</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -681,7 +681,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>24.804637124978424 -4.8461776195990707 -10.130053439609968 -2.6176402644756136 -0.29662437093358102 0.75552562985823912</pose>
+      <pose>24.804637124978424 -4.8461776195990707 -8.6 -2.6176402644756136 -0.29662437093358102 0.75552562985823912</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -735,7 +735,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>24.068391098738704 -3.1301686202281651 -10.103745005597245 1.7257840498479806 -0.56722191335047978 0.069257433945779712</pose>
+      <pose>24.068391098738704 -3.1301686202281651 -8.7 1.7257840498479806 -0.56722191335047978 0.069257433945779712</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -789,7 +789,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-3.9518105291979948 -23.5502 -10.075705976395843 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>-3.9518105291979948 -23.5502 -8.6 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -897,7 +897,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>1.8 -16.050221420132793 -9.9 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>1.8 -16.050221420132793 -8.3 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -951,11 +951,11 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>25.9518105291979948 30.5502 -5.475705976395843 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>25.9518105291979948 30.5502 -9.4 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+<!--
     <model name='falling_rock3_6'>
       <link name='base_link'>
         <inertial>
@@ -1005,7 +1005,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-29.951 -4.5 -6.7 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>-29.951 -4.5 -8.7 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1059,11 +1059,11 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-21.951 9.5 -5.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>-21.951 9.5 -8.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+-->
     <model name='falling_rock3_8'>
       <link name='base_link'>
         <inertial>
@@ -1113,7 +1113,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>21.951 6.5 -1.67 2.34849749228479543 -1.48860348953749005 -1.7357297377689558</pose>
+      <pose>21.951 6.5 -8.9 2.34849749228479543 -1.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1167,7 +1167,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-5 19.5 -5.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>-5 19.5 -9.2 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1275,7 +1275,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>12.268401090174249 13.69146548944328 -6.9511470747844823 -2.2667317683488379 0.51319356352573875 -2.9522422163717126</pose>
+      <pose>12.268401090174249 13.69146548944328 -8.5 -2.2667317683488379 0.51319356352573875 -2.9522422163717126</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1329,7 +1329,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>30.71 -37.27 -1.1 -3.15 0.577 -0.62</pose>
+      <pose>30.71 -37.27 -7.5 -3.15 0.577 -0.62</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1383,7 +1383,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-7.5620043143375071 -1.4441811056659237 -8.1459969549000224 2.1028404077345129 -1.07685484237187 -1.4232442169535009</pose>
+      <pose>-7.5620043143375071 -1.4441811056659237 -8.4 2.1028404077345129 -1.07685484237187 -1.4232442169535009</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1491,7 +1491,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-0.9518105291979948 -23.550221420132793 -9.9 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>-0.9518105291979948 -23.550221420132793 -8.9 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1545,7 +1545,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-11.9518105291979948 -39.050221420132793 -1 1.2 -0.65 -1.3</pose>
+      <pose>-11.9518105291979948 -39.050221420132793 -8.5 1.2 -0.65 -1.3</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1599,7 +1599,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-4.9518105291979948 -32.050221420132793 -1.4 0.34849749228479543 -2.65 -1.3</pose>
+      <pose>-4.9518105291979948 -32.050221420132793 -8.3 0.34849749228479543 -2.65 -1.3</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1653,7 +1653,61 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-20.9518105291979948 -49.050221420132793 -1.4 0.34849749228479543 -0.65 -1.3</pose>
+      <pose>-20.9518105291979948 -49.050221420132793 -8.6 0.34849749228479543 -0.65 -1.3</pose>
+      <static>false</static>
+      <self_collide>false</self_collide>
+    </model>
+
+    <model name='falling_rock2_9'>
+      <link name='base_link'>
+        <inertial>
+          <pose>-0.014732 -0.014451 0.0037100000000000002 0 0 0</pose>
+          <mass>646.50800000000004</mass>
+          <inertia>
+            <ixx>49.619999999999997</ixx>
+            <ixy>4.0800000000000001</ixy>
+            <ixz>-0.32400000000000001</ixz>
+            <iyy>46.472000000000001</iyy>
+            <iyz>-3.9260000000000002</iyz>
+            <izz>51.061999999999998</izz>
+          </inertia>
+        </inertial>
+        <collision name='collision'>
+          <geometry>
+            <mesh>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/meshes/FallingRock02_Collider.dae</uri>
+              <scale>2.0 2.0 2.0</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/meshes/FallingRock02.dae</uri>
+              <scale>2.0 2.0 2.0</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+            <specular>1 1 1 1</specular>
+            <pbr>
+              <metal>
+                <albedo_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Albedo.jpg</albedo_map>
+                <normal_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Normal.jpg</normal_map>
+                <roughness_map>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures/FallingRocks_Roughness.jpg</roughness_map>
+              </metal>
+            </pbr>
+            <script>
+              <uri>file:///home/gerard/.gz/fuel/fuel.gazebosim.org/openrobotics/models/falling rock 2/6/materials/scripts</uri>
+              <uri>https://fuel.gazebosim.org/1.0/openrobotics/models/falling rock 2/6/files/materials/textures</uri>
+              <name>FallingRocks/FallingRocks_Diffuse</name>
+            </script>
+          </material>
+        </visual>
+        <pose>0 0 0 0 0 0</pose>
+        <enable_wind>false</enable_wind>
+      </link>
+      <pose>14.2 -6.6 -8.5 -2.2667317683488379 0.51319356352573875 -2.9522422163717126</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1707,7 +1761,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>5.6775324584967288 -5.23855532030630727 -8.4710347440789633 2.0689788221851488 -2.43512474214872127 0.87092812136953934</pose>
+      <pose>5.6775324584967288 -5.23855532030630727 -7.9710347440789633 2.0689788221851488 -2.43512474214872127 0.87092812136953934</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1815,7 +1869,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-2.951082073437008 -24.742354441949942 -10.058109393509373 0.67731442596708213 0.11654961524850264 0.3740998216991277</pose>
+      <pose>-2.951082073437008 -24.742354441949942 -9.058109393509373 0.67731442596708213 0.11654961524850264 0.3740998216991277</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1869,7 +1923,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>19.842630058888272 -19.5 -1.1 -1.1702254661075615 -0.92248023541250687 1.29488063543257453</pose>
+      <pose>19.842630058888272 -19.5 -7.7 -1.1702254661075615 -0.92248023541250687 1.29488063543257453</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1923,7 +1977,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>41.25 -19.67 -1.8 -1.97 1.37 2.40</pose>
+      <pose>41.25 -19.67 -7.1 -1.97 1.37 2.40</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -1977,7 +2031,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>32.353591500738062 12.190204548607889 -8.5161845742708486 -1.827351637574977 0.51911951814833668 0.53093323586562102</pose>
+      <pose>32.353591500738062 12.190204548607889 -8.3 -1.827351637574977 0.51911951814833668 0.53093323586562102</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -2031,14 +2085,14 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>38.14 1.27 -0.84 -0.89 0.41 1</pose>
+      <pose>38.14 1.27 -7.8 -0.89 0.41 1</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
 
     
 
-
+<!--
     <model name='falling_rock1_6'>
       <link name='base_link'>
         <inertial>
@@ -2088,7 +2142,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-51.1 3.2701664413605136 -2.8447099458314948 -20.8901394866778798 0.41314236072280086 1.0025358548938175</pose>
+      <pose>-51.1 3.2701664413605136 -10.1 -20.8901394866778798 0.41314236072280086 1.0025358548938175</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -2142,7 +2196,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-60.95 6.0 -11.4 0.3484 -0.65 -1.3</pose>
+      <pose>-60.95 6.0 -13.4 0.3484 -0.65 -1.3</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -2196,7 +2250,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-55 -3 -2.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
+      <pose>-55 -3 -10.47 0.34849749228479543 -0.48860348953749005 -1.7357297377689558</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
@@ -2250,11 +2304,11 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <pose>-62 7 -2.54559 -2.8335614351183418 0.81001686625960412 -0.71767758638547974</pose>
+      <pose>-62 7 -2.54559 -9 0.81001686625960412 -0.71767758638547974</pose>
       <static>false</static>
       <self_collide>false</self_collide>
     </model>
-
+-->
 
     <!-- Martian Gravity-->
     <gravity>0 0 -3.711</gravity>
@@ -2269,7 +2323,7 @@
     <include>
       <uri>https://fuel.gazebosim.org/1.0/jasmeetsingh/models/Mars Gale Crater Patch 2</uri>
       <name>mars_gale_crater</name>
-      <pose>0 0 -10 0 0 0</pose>
+      <pose>0 -0.7 -8.8 0 0 0</pose>
     </include>
 
   </world>

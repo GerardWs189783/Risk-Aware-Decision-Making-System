@@ -127,7 +127,8 @@
 		<joint name="mast_02_joint" type="continuous">
 			<parent link="mast_p_to_mast_02"/>
 			<child link="mast_02"/>
-			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<!--<origin xyz="0 0 0" rpy="0 0 0"/> -->
+			<origin xyz="0 0 0" rpy="0 0 -0.523599"/> <!-- added to compensate the yaw shift, so camera 0 yaw is perfeclty alligned with the body of rover -->
 			<limit effort="10000.0" velocity="100.0"/>
 			<axis xyz="0 0 1"/>
 			<dynamics damping="0.0" friction="0.0"/>
