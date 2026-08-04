@@ -155,7 +155,7 @@ collision_monitor:
       points: "[ [1.711, 1.319], [-1.711, 1.319], [-1.711, -1.319], [1.711, -1.319] ]"
       action_type: "slowdown"
       min_points: 4
-      slowdown_ratio: 0.99
+      slowdown_ratio: 0.6
       visualize: True
       polygon_pub_topic: "polygon_warning"
     

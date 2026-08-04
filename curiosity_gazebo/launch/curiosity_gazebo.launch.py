@@ -55,9 +55,20 @@ def generate_launch_description():
         "urdf",
         "curiosity_mars_rover.xacro",
     )
+    # mars_world_model = os.path.join(
+    #     curiosity_gazebo_path, "worlds", "mars_curiosity.world"
+    # )
+
+    # mars_world_model = os.path.join(
+    #         curiosity_gazebo_path, "worlds", "map_easy.world"
+    #     )
+    # mars_world_model = os.path.join(
+    #             curiosity_gazebo_path, "worlds", "map_medium.world"
+    #         )
     mars_world_model = os.path.join(
-        curiosity_gazebo_path, "worlds", "mars_curiosity.world"
-    )
+                    curiosity_gazebo_path, "worlds", "map_hard.world"
+                )
+    
 
     # mars_world_model = os.path.join(
     #     curiosity_gazebo_path, "worlds", "rock_perc_train.world"
@@ -153,11 +164,37 @@ def generate_launch_description():
             "curiosity_mars_rover",
             "-topic",
             robot_description,
+            "-x",
+            "-13.0",
+            "-y",
+            "-9.0",
             "-z",
-            "-7.8",
+            "-7.5",
+            "-Y",
+            "1.57"
         ],
         output="screen",
     )
+
+    # spawn = Node(
+    #         package="ros_gz_sim",
+    #         executable="create",
+    #         arguments=[
+    #             "-name",
+    #             "curiosity_mars_rover",
+    #             "-topic",
+    #             robot_description,
+    #             "-x",
+    #             "-11.0",
+    #             "-y",
+    #             "-12.5",
+    #             "-z",
+    #             "-7.5",
+    #             "-Y",
+    #             "1.57"
+    #         ],
+    #         output="screen",
+    #     )
 
     ## Control Components
 

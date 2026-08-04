@@ -30,22 +30,44 @@
 
 #include "action_msgs/msg/goal_status.hpp"
 #include <std_srvs/srv/empty.hpp>
+#include <nav2_msgs/srv/clear_entire_costmap.hpp>
 
 // Check Mission Objective (first action node to set the goal)
 
 class CheckMissionObjective : public BT::SyncActionNode {
 private:
-    bool goal_set_ = false; //flag
+    std::vector<std::string> waypoints_ = {"Waypoint_Alpha", "Waypoint_Beta"};
+    size_t current_index_ = 0;
+    std::string current_goal_ = "";
+
 public:
     CheckMissionObjective(const std::string& name, const BT::NodeConfig& config) : BT::SyncActionNode(name, config) {}
     static BT::PortsList providedPorts() { return { BT::OutputPort<std::string>("goal_output") }; }
     
     BT::NodeStatus tick() override {
-        // Only write to the port ONCE 
-        if (!goal_set_) {
-            setOutput("goal_output", "Waypoint_Alpha");
-            goal_set_ = true;
+        bool advance = false;
+        // Check if FollowTrajectory successfully reached the previous goal
+        if (!config().blackboard->get("waypoint_reached", advance)) {
+            advance = false; // Default to false on the very first tick before the flag exists
         }
+
+        // If it's our first tick, or the previous goal was reached, advance the queue
+        if (advance || current_goal_.empty()) {
+            if (current_index_ < waypoints_.size()) {
+                current_goal_ = waypoints_[current_index_];
+                current_index_++;
+                
+                // Reset the flag so we don't accidentally skip waypoints
+                config().blackboard->set("waypoint_reached", false);
+                std::cout << "\033[1;34m[BT] Mission Objective Updated: " << current_goal_ << "\033[0m\n";
+            } else {
+                std::cout << "\033[1;32m[BT] ALL WAYPOINTS COMPLETED! Mission Success.\033[0m\n";
+                // Return FAILURE to stop the tree from looping once the mission is completely done
+                return BT::NodeStatus::FAILURE; 
+            }
+        }
+        
+        setOutput("goal_output", current_goal_);
         return BT::NodeStatus::SUCCESS;
     }
 };
@@ -93,6 +115,10 @@ private:
     
     int publish_counter_ = 0;
 
+    // rclcpp::Client<nav2_msgs::srv::ClearEntireCostmap>::SharedPtr clear_global_client_;
+    // rclcpp::Client<nav2_msgs::srv::ClearEntireCostmap>::SharedPtr clear_local_client_;
+    // int clear_counter_ = 0;
+
 public:
     RiskAssessment(const std::string& name, const BT::NodeConfig& config, 
                    rclcpp::Node::SharedPtr ros_node, 
@@ -122,7 +148,8 @@ public:
                 this->current_path_ = msg;
             }
         );    
-
+        // clear_global_client_ = ros_node_->create_client<nav2_msgs::srv::ClearEntireCostmap>("/global_costmap/clear_entirely_global_costmap");
+        // clear_local_client_ = ros_node_->create_client<nav2_msgs::srv::ClearEntireCostmap>("/local_costmap/clear_entirely_local_costmap");
         tf_buffer_ = std::make_shared<tf2_ros::Buffer>(ros_node_->get_clock());
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -142,13 +169,11 @@ public:
 
     BT::NodeStatus tick() override {
         //Prevention of missing the data
-        if (!confirmed_obstacles_->empty()) {
+       if (!confirmed_obstacles_->empty()) {
             publish_counter_++;
-            
-            // Only publish every 10th tick
-            if (publish_counter_ >= 10) {
+            if (publish_counter_ >= 100) { 
                 auto cloud = sensor_msgs::msg::PointCloud2();
-                cloud.header.frame_id = "odom"; 
+                cloud.header.frame_id = "odom";
                 cloud.header.stamp = ros_node_->now();
 
                 sensor_msgs::PointCloud2Modifier modifier(cloud);
@@ -166,8 +191,6 @@ public:
                     ++iter_x; ++iter_y; ++iter_z;
                 }
                 point_cloud_pub_->publish(cloud);
-                
-                // Reset counter after publishing
                 publish_counter_ = 0; 
             }
         }
@@ -202,14 +225,32 @@ public:
 
             geometry_msgs::msg::PointStamped point_sensor;
             point_sensor.header.frame_id = "camera_link"; 
-            point_sensor.header.stamp = rclcpp::Time(0);
+            point_sensor.header.stamp = last_msg_time_;
             point_sensor.point.x = rel_x;
             point_sensor.point.y = rel_y;
             point_sensor.point.z = 0.0;
 
             try {
+
+                // ========================================================
+                // 1. FOOTPRINT HARDWARE MASK
+                // ========================================================
+                // Transform to base_link to check if the rock is physically touching the rover
+                auto point_base = tf_buffer_->transform(point_sensor, "base_link", tf2::durationFromSec(0.1));
+                
+                // Your footprint limits from YAML, plus a 0.2m margin for arm overhang/shadows
+                double min_x = -1.841 - 0.15;
+                double max_x =  2.341 + 0.15;
+                double min_y = -1.469 - 0.15;
+                double max_y =  1.469 + 0.15;
+
+                if (point_base.point.x >= min_x && point_base.point.x <= max_x &&
+                    point_base.point.y >= min_y && point_base.point.y <= max_y) {
+                    // The detection is inside the rover's physical body. Ignore it completely!
+                    continue; 
+                }
                 //global coordinates
-                auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.0));
+                auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.1));
                 double global_x = point_odom.point.x;
                 double global_y = point_odom.point.y;
                 
@@ -412,13 +453,13 @@ public:
             if (getInput("target_x", x) && getInput("target_y", y)) {
                 
                 std::cout << "\033[1;31m[BT] DANGER THRESHOLD MET! Risk: " << risk 
-                          << ". Updating Map & Triggering Stop...\033[0m\n";
+                          << ". Triggering Stop for LiDAR inspection...\033[0m\n";
                 
                 // Add to shared memory so RiskAssessment skips it on the next tick
-                confirmed_obstacles_->push_back({x, y});
+                //confirmed_obstacles_->push_back({x, y});
                 
                 // Publish to Nav2 so the planner routes around it when it resumes
-                publishSemanticMap();
+                //publishSemanticMap();
             }
             // Return SUCCESS to trigger the sequence (EmergencyStop -> ReactToObstacle)
             return BT::NodeStatus::SUCCESS;
@@ -438,7 +479,7 @@ private:
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_pub_;
     
     // treshold lower bound for the planning zone
-    double tau_1_ = 0.35; 
+    double tau_1_ = 0.3; 
 
     void publishSemanticMap() {
         auto cloud = sensor_msgs::msg::PointCloud2();
@@ -543,7 +584,7 @@ public:
     EmergencyStop(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
         : BT::SyncActionNode(name, config), ros_node_(ros_node) 
     {
-        brake_client_ = ros_node_->create_client<std_srvs::srv::Empty>("/stop");
+        brake_client_ = ros_node_->create_client<std_srvs::srv::Empty>("/move_stop");
     }
 
     static BT::PortsList providedPorts() {
@@ -574,9 +615,21 @@ private:
     
     // Dictionary of waypoints
     std::map<std::string, std::pair<double, double>> waypoints_ {
-        {"Waypoint_Alpha", {30.0, -19.0}},
-        {"Waypoint_Beta", {10.0, -2.5}}
+        {"Waypoint_Alpha", {-5.0, 13.0}},
+        {"Waypoint_Beta", {-3.0, 20.0}}
     };
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {5.2, 6.5}},
+    //     {"Waypoint_Beta", {5.0, 16.0}}
+    // };
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {21.7, 26.4}},
+    //     {"Waypoint_Beta", {0.5, 11.0}}
+    // };
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {30.0, -19.0}},
+    //     {"Waypoint_Beta", {10.0, -2.5}}
+    // };
 
     bool goal_reached_ = false;
     bool goal_responded_ = false;
@@ -668,6 +721,7 @@ public:
             auto status = goal_handle_->get_status();
             if (status == action_msgs::msg::GoalStatus::STATUS_SUCCEEDED) {
                 std::cout << "\033[1;32m[BT] Waypoint Reached Successfully!\033[0m\n";
+                config().blackboard->set("waypoint_reached", true);
                 return BT::NodeStatus::SUCCESS;
             } else {
                 std::cout << "\033[1;31m[BT] Nav2 Failed to reach the goal.\033[0m\n";
@@ -702,6 +756,7 @@ private:
 
     rclcpp::Time scan_start_time_;
     rclcpp::Time movement_start_time_;
+    rclcpp::Time last_scan_time_;
 
     // relocation of obstacle possible
 
@@ -807,7 +862,8 @@ public:
                     // If we found a valid ray in the window, confirm the hit
                     if (found_better_match) {
                         this->lidar_hit_confirmed_ = true;
-                        this->refined_distance_ = best_range; 
+                        this->refined_distance_ = best_range;
+                        this->last_scan_time_ = msg->header.stamp; 
                     }
                 }
             });
@@ -881,22 +937,19 @@ public:
                 // the rock lies straight ahead on the camera_link's X-axis!
                 geometry_msgs::msg::PointStamped point_sensor;
                 point_sensor.header.frame_id = "camera_link"; 
-                point_sensor.header.stamp = rclcpp::Time(0); // Get the rotated mast TF
+                point_sensor.header.stamp = last_scan_time_; // Get the rotated mast TF
                 point_sensor.point.x = refined_distance_;    // Straight ahead
                 point_sensor.point.y = 0.0;                  // Perfectly centered
                 point_sensor.point.z = 0.0;
 
                 try {
                     // TF2 automatically accounts for the mast's current yaw and tilt!
-                    auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.0));
+                    auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.1));
                     
-                    if (!confirmed_obstacles_->empty()) {
-                        confirmed_obstacles_->back().first = point_odom.point.x;
-                        confirmed_obstacles_->back().second = point_odom.point.y;
-                        
-                        // Republish map with highly accurate coordinate
+                        confirmed_obstacles_->push_back({point_odom.point.x, point_odom.point.y});
+                        // publish map with highly accurate coordinate
                         publishSemanticMap();
-                    }
+
                 } catch (const tf2::TransformException & ex) {
                     RCLCPP_WARN(ros_node_->get_logger(), "TF2 Error during relocation: %s", ex.what());
                 }
@@ -907,7 +960,8 @@ public:
             } 
             else if ((ros_node_->now() - scan_start_time_).seconds() > 3.0) { 
                 std::cout << "\033[1;33m[BT] -> FALLBACK: LiDAR missed the target (Timeout). Resetting...\033[0m\n";
-                publishMastCommand(0.0, 0.0); 
+                publishMastCommand(0.0, 0.0);
+                // deleting the false rock
                 waiting_for_scan_ = false;
                 is_looking_down_ = false;
             }
