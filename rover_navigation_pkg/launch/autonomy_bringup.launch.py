@@ -22,22 +22,22 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Adding Decision Making node (Behavior Tree) from rover_autonomy_pkg
-    # autonomy_node = Node(
-    #     package='rover_autonomy_pkg',
-    #     executable='autonomy_node',
-    #     name='autonomy_node',
-    #     parameters=[{'use_sim_time': True}],
-    #     output='screen'
-    # )
-
+    #Adding Decision Making node (Behavior Tree) from rover_autonomy_pkg
     autonomy_node = Node(
-            package='rover_autonomy_pkg',
-            executable='risk_autonomy_node',
-            name='autonomy_node',
-            parameters=[{'use_sim_time': True}],
-            output='screen'
-        )
+        package='rover_autonomy_pkg',
+        executable='autonomy_node',
+        name='autonomy_node',
+        parameters=[{'use_sim_time': True}],
+        output='screen'
+    )
+
+    # autonomy_node = Node(
+    #         package='rover_autonomy_pkg',
+    #         executable='risk_autonomy_node',
+    #         name='autonomy_node',
+    #         parameters=[{'use_sim_time': True}],
+    #         output='screen'
+    #     )
 
     # Adding Nav2 bringup nodes (planner and controller)
     nav2_launch = IncludeLaunchDescription(

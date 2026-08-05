@@ -32,17 +32,38 @@
 
 class CheckMissionObjective : public BT::SyncActionNode {
 private:
-    bool goal_set_ = false; //flag
+    std::vector<std::string> waypoints_ = {"Waypoint_Alpha", "Waypoint_Beta"};
+    size_t current_index_ = 0;
+    std::string current_goal_ = "";
+
 public:
     CheckMissionObjective(const std::string& name, const BT::NodeConfig& config) : BT::SyncActionNode(name, config) {}
     static BT::PortsList providedPorts() { return { BT::OutputPort<std::string>("goal_output") }; }
     
     BT::NodeStatus tick() override {
-        // Only write to the port ONCE 
-        if (!goal_set_) {
-            setOutput("goal_output", "Waypoint_Alpha");
-            goal_set_ = true;
+        bool advance = false;
+        // Check if FollowTrajectory successfully reached the previous goal
+        if (!config().blackboard->get("waypoint_reached", advance)) {
+            advance = false; // Default to false on the very first tick before the flag exists
         }
+
+        // If first tick, or the previous goal was reached, advance the queue
+        if (advance || current_goal_.empty()) {
+            if (current_index_ < waypoints_.size()) {
+                current_goal_ = waypoints_[current_index_];
+                current_index_++;
+                
+                // Reset the flag so we don't accidentally skip waypoints
+                config().blackboard->set("waypoint_reached", false);
+                std::cout << "\033[1;34m[BT] Mission Objective Updated: " << current_goal_ << "\033[0m\n";
+            } else {
+                std::cout << "\033[1;32m[BT] ALL WAYPOINTS COMPLETED! Mission Success.\033[0m\n";
+                // Return FAILURE to stop the tree from looping once the mission is completely done
+                return BT::NodeStatus::FAILURE; 
+            }
+        }
+        
+        setOutput("goal_output", current_goal_);
         return BT::NodeStatus::SUCCESS;
     }
 };
@@ -161,7 +182,23 @@ public:
             point_sensor.point.z = 0.0;
 
             try {
-                auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.0));
+                // ========================================================
+                // 1. FOOTPRINT MASK
+                // ========================================================
+                auto point_base = tf_buffer_->transform(point_sensor, "base_link", tf2::durationFromSec(0.1));
+                
+                // Your footprint limits from YAML, plus a 0.2m margin for arm overhang/shadows
+                double min_x = -1.841 - 0.15;
+                double max_x =  2.341 + 0.15;
+                double min_y = -1.469 - 0.15;
+                double max_y =  1.469 + 0.15;
+
+                if (point_base.point.x >= min_x && point_base.point.x <= max_x &&
+                    point_base.point.y >= min_y && point_base.point.y <= max_y) {
+                    // The detection is inside the rover's physical body. Ignore it completely!
+                    continue; 
+                }
+                auto point_odom = tf_buffer_->transform(point_sensor, "odom", tf2::durationFromSec(0.1));
                 //global camera position
                 double global_x = point_odom.point.x;
                 double global_y = point_odom.point.y;
@@ -261,9 +298,13 @@ private:
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr nav_pose_client_;
     rclcpp::Client<std_srvs::srv::Empty>::SharedPtr brake_client_;
 // dictionary of the waypoints (for now)
-    std::map<std::string,std::pair<double,double>> waypoints_ {
-        {"Waypoint_Alpha", {30.0, -19.0}},
-        {"Waypoint_Beta", {10.0, -2.5}}
+    // std::map<std::string,std::pair<double,double>> waypoints_ {
+    //     {"Waypoint_Alpha", {30.0, -19.0}},
+    //     {"Waypoint_Beta", {10.0, -2.5}}
+    // };
+    std::map<std::string, std::pair<double, double>> waypoints_ {
+        {"Waypoint_Alpha", {-5.0, 13.0}},
+        {"Waypoint_Beta", {-3.0, 20.0}}
     };
 
     bool goal_reached_ = false;

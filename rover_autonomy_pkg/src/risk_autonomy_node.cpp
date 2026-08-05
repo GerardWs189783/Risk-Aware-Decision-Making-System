@@ -51,7 +51,7 @@ public:
             advance = false; // Default to false on the very first tick before the flag exists
         }
 
-        // If it's our first tick, or the previous goal was reached, advance the queue
+        // If first tick, or the previous goal was reached, advance the queue
         if (advance || current_goal_.empty()) {
             if (current_index_ < waypoints_.size()) {
                 current_goal_ = waypoints_[current_index_];
@@ -233,7 +233,7 @@ public:
             try {
 
                 // ========================================================
-                // 1. FOOTPRINT HARDWARE MASK
+                // 1. FOOTPRINT MASK
                 // ========================================================
                 // Transform to base_link to check if the rock is physically touching the rover
                 auto point_base = tf_buffer_->transform(point_sensor, "base_link", tf2::durationFromSec(0.1));
