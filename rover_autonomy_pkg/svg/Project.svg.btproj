@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="Project">
+    <include path="classic_bt.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel>
+        <Condition ID="CheckMissionObjective" editable="true">
+            <output_port name="goal_output"/>
+        </Condition>
+        <Condition ID="CheckObstacle" editable="true">
+            <output_port name="target_tilt"/>
+            <output_port name="target_yaw"/>
+            <output_port name="target_distance"/>
+        </Condition>
+        <Action ID="ExecuteTask" editable="true"/>
+        <Action ID="FollowTrajectory" editable="true">
+            <input_port name="goal_input"/>
+        </Action>
+        <Action ID="ReactToObstacle" editable="true">
+            <input_port name="target_tilt"/>
+            <input_port name="target_yaw"/>
+            <input_port name="target_distance"/>
+        </Action>
+        <Action ID="WaitForNextTask" editable="true"/>
+    </TreeNodesModel>
+</root>

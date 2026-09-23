@@ -1,0 +1,2 @@
+Exp,Variant,Scenario,Map_Difficulty,Waypoints,Run_ID,Success,Time_s,Collisions,Unsafe_States,False_Pos,False_Neg,Confirmed_Rocks,State_Monitor,State_Plan,State_Danger,Mean_Tick_ms,Max_Tick_ms,Std_Tick_ms,CPU_Pct,RAM_Pct,Max_Risk,Mean_Active_Risk
+E2_Ablation,no_platt,ideal,medium,wp2,3,1,245.47,1,2,0,8,1,5172,1,0,15.394,161.556,30.876,0.3,0.2,0.301,0.301

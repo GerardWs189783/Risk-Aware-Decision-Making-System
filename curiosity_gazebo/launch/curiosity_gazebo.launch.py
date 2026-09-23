@@ -66,7 +66,7 @@ def generate_launch_description():
     #             curiosity_gazebo_path, "worlds", "map_medium.world"
     #         )
     mars_world_model = os.path.join(
-                    curiosity_gazebo_path, "worlds", "map_hard.world"
+                    curiosity_gazebo_path, "worlds", "map_medium_gauss.world"
                 )
     
 
@@ -156,45 +156,83 @@ def generate_launch_description():
         output="screen",
     )
 
+    # spawn = Node(
+    #     package="ros_gz_sim",
+    #     executable="create",
+    #     arguments=[
+    #         "-name",
+    #         "curiosity_mars_rover",
+    #         "-topic",
+    #         robot_description,
+    #         "-x",
+    #         "-13.0",
+    #         "-y",
+    #         "-9.0",
+    #         "-z",
+    #         "-7.5",
+    #         "-Y",
+    #         "1.57"
+    #     ],
+    #     output="screen",
+    # )
+
     spawn = Node(
-        package="ros_gz_sim",
-        executable="create",
-        arguments=[
-            "-name",
-            "curiosity_mars_rover",
-            "-topic",
-            robot_description,
-            "-x",
-            "-13.0",
-            "-y",
-            "-9.0",
-            "-z",
-            "-7.5",
-            "-Y",
-            "1.57"
-        ],
-        output="screen",
-    )
+            package="ros_gz_sim",
+            executable="create",
+            arguments=[
+                "-name",
+                "curiosity_mars_rover",
+                "-topic",
+                robot_description,
+                "-x",
+                "-11.0",
+                "-y",
+                "-12.5",
+                "-z",
+                "-7.5",
+                "-Y",
+                "1.57"
+            ],
+            output="screen",
+        )
+    # spawn = Node(
+    #             package="ros_gz_sim",
+    #             executable="create",
+    #             arguments=[
+    #                 "-name",
+    #                 "curiosity_mars_rover",
+    #                 "-topic",
+    #                 robot_description,
+    #                 "-x",
+    #                 "-21.0",
+    #                 "-y",
+    #                 "17.0",
+    #                 "-z",
+    #                 "-7.8",
+    #             ],
+    #             output="screen",
+    #         )
 
     # spawn = Node(
-    #         package="ros_gz_sim",
-    #         executable="create",
-    #         arguments=[
-    #             "-name",
-    #             "curiosity_mars_rover",
-    #             "-topic",
-    #             robot_description,
-    #             "-x",
-    #             "-11.0",
-    #             "-y",
-    #             "-12.5",
-    #             "-z",
-    #             "-7.5",
-    #             "-Y",
-    #             "1.57"
-    #         ],
-    #         output="screen",
-    #     )
+    #             package="ros_gz_sim",
+    #             executable="create",
+    #             arguments=[
+    #                 "-name",
+    #                 "curiosity_mars_rover",
+    #                 "-topic",
+    #                 robot_description,
+    #                 "-x",
+    #                 "18.0",
+    #                 "-y",
+    #                 "20.0",
+    #                 "-z",
+    #                 "-7.8",
+    #                 "-Y",
+    #                 "-1.57"
+    #             ],
+    #             output="screen",
+    #         )
+
 
     ## Control Components
 

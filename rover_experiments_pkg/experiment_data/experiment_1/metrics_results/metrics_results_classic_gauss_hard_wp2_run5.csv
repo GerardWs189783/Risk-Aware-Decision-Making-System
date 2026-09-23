@@ -1,0 +1,2 @@
+Exp,Variant,Scenario,Map_Difficulty,Waypoints,Run_ID,Success,Time_s,Collisions,Unsafe_States,False_Pos,False_Neg,Confirmed_Rocks,State_Monitor,State_Plan,State_Danger,Mean_Tick_ms,Max_Tick_ms,Std_Tick_ms,CPU_Pct,RAM_Pct,Max_Confidence,Mean_Active_Confidence
+E1_Test,classic,gauss,hard,wp2,5,0,360.0,0,3,20,12,26,13541,25,1,0.847,2000.595,33.918,0.3,0.2,0.886,0.447

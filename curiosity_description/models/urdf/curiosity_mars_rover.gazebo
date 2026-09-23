@@ -203,7 +203,8 @@
         </clip>
         <noise>
           <type>gaussian</type>
-          <stddev>0.007</stddev>
+          <stddev> 0.3 </stddev>
+          <!--<stddev>$(arg camera_noise_stddev)</stddev>-->
         </noise>
       </camera>
       <always_on>1</always_on>
@@ -214,6 +215,15 @@
   <gazebo reference="chassis">
     <mu1>0.3</mu1>
     <mu2>0.3</mu2>
+
+    <sensor name="chassis_bumper" type="contact">
+      <always_on>true</always_on>
+      <update_rate>10.0</update_rate>
+      <contact>
+        <collision>chassis_collision</collision> 
+      </contact>
+      <topic>/rover/bumper</topic>
+    </sensor>
   </gazebo>
 
   <!-- Wheel Train -->

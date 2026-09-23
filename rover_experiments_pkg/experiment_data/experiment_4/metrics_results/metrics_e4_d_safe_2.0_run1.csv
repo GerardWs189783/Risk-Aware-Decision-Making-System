@@ -1,0 +1,2 @@
+Tested_Param,Param_Value,Run_ID,Success,Time_s,Collisions,Unsafe_States,False_Pos,False_Neg,Confirmed_Rocks,State_Monitor,State_Plan,State_Danger,Mean_Tick_ms,Max_Tick_ms,Std_Tick_ms,Max_Risk,Mean_Active_Risk
+d_safe,2.0,1,0,86.83,0,0,0,9,0,0,0,0,0.113,0.358,0.032,0.0,0.0

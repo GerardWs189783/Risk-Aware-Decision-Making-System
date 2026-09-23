@@ -27,6 +27,8 @@
 #include "action_msgs/msg/goal_status.hpp"
 
 #include <std_srvs/srv/empty.hpp>
+#include "std_msgs/msg/float64.hpp"
+#include "std_msgs/msg/string.hpp"
 
 // Check Mission Objective (first action node to set the goal)
 
@@ -35,10 +37,21 @@ private:
     std::vector<std::string> waypoints_ = {"Waypoint_Alpha", "Waypoint_Beta"};
     size_t current_index_ = 0;
     std::string current_goal_ = "";
+    rclcpp::Node::SharedPtr ros_node_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+    std_msgs::msg::String msg;
 
 public:
-    CheckMissionObjective(const std::string& name, const BT::NodeConfig& config) : BT::SyncActionNode(name, config) {}
-    static BT::PortsList providedPorts() { return { BT::OutputPort<std::string>("goal_output") }; }
+    CheckMissionObjective(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
+        : BT::SyncActionNode(name, config), ros_node_(ros_node) 
+    {
+        // Initialize the publisher
+        status_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/mission_status", 10);
+    }
+    
+    static BT::PortsList providedPorts() { 
+        return { BT::OutputPort<std::string>("goal_output") }; 
+    }
     
     BT::NodeStatus tick() override {
         bool advance = false;
@@ -59,6 +72,9 @@ public:
             } else {
                 std::cout << "\033[1;32m[BT] ALL WAYPOINTS COMPLETED! Mission Success.\033[0m\n";
                 // Return FAILURE to stop the tree from looping once the mission is completely done
+                
+                msg.data = "SUCCESS";
+                status_pub_->publish(msg);
                 return BT::NodeStatus::FAILURE; 
             }
         }
@@ -97,6 +113,11 @@ private:
     std::shared_ptr<std::vector<std::pair<double, double>>> confirmed_obstacles_;
     const double MAST_HEIGHT = 1.236;
     bool is_path_blocked_ = false;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr confidence_pub_;
+    std_msgs::msg::Float64 confidence_msg_;
+
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr state_pub_;
+    std_msgs::msg::String state_msg_;
 
 public:
     CheckObstacle(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node,
@@ -114,6 +135,9 @@ public:
             [this](const rover_interfaces::msg::PerceptionResultArray::SharedPtr msg) {
                 this->last_msg_ = msg;
             });   
+
+        confidence_pub_ = perception_check_node_->create_publisher<std_msgs::msg::Float64>("/bt/current_confidence", 10); 
+        state_pub_ = perception_check_node_->create_publisher<std_msgs::msg::String>("/bt/state_transition", 10);   
     }
 
     static BT::PortsList providedPorts() 
@@ -215,12 +239,17 @@ public:
                 //===============================================
                 if (!already_known) {                 
                     
+
                     if (rock.distance_meters > 3.0 &&  rock.distance_meters <= 10.0) {
                         // PLANNING ZONE (> 3.0m)
                         // Adds the rock to the point cloud for the navigation to include it in path planning and actuation
                         std::cout << "\033[1;36m[BT] Planning Zone Rock mapped at (X: " << global_x << ", Y: " << global_y << ")\033[0m\n";
                         confirmed_obstacles_->push_back({global_x, global_y});
                         publishSemanticMap();
+                        confidence_msg_.data = rock.confidence;
+                        confidence_pub_->publish(confidence_msg_);
+                        state_msg_.data = "PLANNING";
+                        state_pub_->publish(state_msg_);
                     } 
                     else if (rock.distance_meters > 10.0)
                     {
@@ -230,6 +259,8 @@ public:
                                              *perception_check_node_->get_clock(), 
                                              2000, // 2000 milliseconds
                                              "[BT] Monitor Zone Rock detected at (X: %f, Y: %f)", global_x, global_y);
+                        state_msg_.data = "MONITORING";
+                        state_pub_->publish(state_msg_);                     
                     }
                     
                     else if (rock.distance_meters >1.3 && rock.distance_meters <=3.0)
@@ -245,7 +276,10 @@ public:
                         // push to the map the obstacle
                         confirmed_obstacles_->push_back({global_x, global_y});
                         publishSemanticMap();
-                        
+                        confidence_msg_.data = rock.confidence;
+                        confidence_pub_->publish(confidence_msg_);
+                        state_msg_.data = "DANGER";
+                        state_pub_->publish(state_msg_);
                         trigger_inspection = true;
 
                         break;
@@ -297,20 +331,32 @@ private:
     rclcpp::Node::SharedPtr ros_node_;
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr nav_pose_client_;
     rclcpp::Client<std_srvs::srv::Empty>::SharedPtr brake_client_;
-// dictionary of the waypoints (for now)
-    // std::map<std::string,std::pair<double,double>> waypoints_ {
-    //     {"Waypoint_Alpha", {30.0, -19.0}},
-    //     {"Waypoint_Beta", {10.0, -2.5}}
+    // Dictionary of waypoints
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {-5.0, 13.0}},
+    //     {"Waypoint_Beta", {-3.0, 20.0}}
     // };
     std::map<std::string, std::pair<double, double>> waypoints_ {
-        {"Waypoint_Alpha", {-5.0, 13.0}},
-        {"Waypoint_Beta", {-3.0, 20.0}}
+        {"Waypoint_Alpha", {5.2, 6.5}},
+        {"Waypoint_Beta", {5.0, 16.0}}
     };
-
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {21.7, 26.4}},
+    //     {"Waypoint_Beta", {0.5, 11.0}}
+    // };
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {0.7,13.0}},
+    //     {"Waypoint_Beta", {13.0, 16.0}}
+    // };
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {-8.0, 15.0}},
+    //     {"Waypoint_Beta", {-7.0, -2.0}}
+    // };
     bool goal_reached_ = false;
     bool goal_responded_ = false;
     bool goal_accepted_ = false;
     std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>> goal_handle_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
 
 public:
     FollowTrajectory(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
@@ -319,6 +365,7 @@ public:
             //creating clients for services of navigation and emergency braking
             nav_pose_client_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(ros_node_, "/navigate_to_pose");
             brake_client_ = ros_node_->create_client<std_srvs::srv::Empty>("/stop");
+            status_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/mission_status", 10);
         }    
     static BT::PortsList providedPorts() { 
         return { BT::InputPort<std::string>("goal_input") }; 
@@ -399,28 +446,23 @@ public:
     }
 
     BT::NodeStatus onRunning() override {
-        if (!goal_responded_) {
-            return BT::NodeStatus::RUNNING; 
-        }
+        if (!goal_responded_) return BT::NodeStatus::RUNNING; 
+        if (goal_responded_ && !goal_accepted_) return BT::NodeStatus::FAILURE; 
 
-        // sth went wrong, goal not accepted, so the server didnt work
-        if (goal_responded_ && !goal_accepted_) {
-            return BT::NodeStatus::FAILURE; 
-        }
-
-        // result callback check
         if (goal_reached_) {
             auto status = goal_handle_->get_status();
             if (status == action_msgs::msg::GoalStatus::STATUS_SUCCEEDED) {
                 std::cout << "\033[1;32m[BT] Waypoint Reached Successfully!\033[0m\n";
+                config().blackboard->set("waypoint_reached", true);
                 return BT::NodeStatus::SUCCESS;
             } else {
                 std::cout << "\033[1;31m[BT] Nav2 Failed to reach the goal.\033[0m\n";
+                std_msgs::msg::String msg;
+                msg.data = "FAILED";
+                status_pub_->publish(msg);
                 return BT::NodeStatus::FAILURE;
             }
         }
-
-        // if nothing wrong happened or goal not reached, the node is running still
         return BT::NodeStatus::RUNNING; 
     }
 
@@ -714,7 +756,7 @@ int main(int argc, char **argv)
     ros_node->set_parameter(rclcpp::Parameter("use_sim_time", true));
     BT::BehaviorTreeFactory factory;
     // defining the nodes
-    factory.registerNodeType<CheckMissionObjective>("CheckMissionObjective");
+    
     factory.registerNodeType<ExecuteTask>("ExecuteTask");
     factory.registerNodeType<WaitForNextTask>("WaitForNextTask");
     auto shared_memory = std::make_shared<std::vector<std::pair<double, double>>>();
@@ -737,19 +779,30 @@ int main(int argc, char **argv)
     };
     factory.registerBuilder<FollowTrajectory>("FollowTrajectory", builder_follow_traj);
 
+    factory.registerBuilder<CheckMissionObjective>("CheckMissionObjective", 
+        [ros_node](const std::string& name, const BT::NodeConfig& config) {
+            return std::make_unique<CheckMissionObjective>(name, config, ros_node);
+        }); 
+
+    auto tick_time_pub = ros_node->create_publisher<std_msgs::msg::Float64>("/bt/tick_time_ms", 10);    
+
     std::string package_share_directory = ament_index_cpp::get_package_share_directory("rover_autonomy_pkg");
     std::string xml_path = package_share_directory + "/behavior_trees/classic_bt.xml";
 
     auto tree = factory.createTreeFromFile(xml_path);
     std::cout << "--- Behavior Tree Started ---" << std::endl;
-
-    auto sleep_time = rclcpp::Duration::from_seconds(0.1);
+    std_msgs::msg::Float64 tick_msg;
     
     rclcpp::Rate rate(10.0); 
     
     while (rclcpp::ok()) {
         rclcpp::spin_some(ros_node);
-        tree.tickExactlyOnce();      
+        auto start_time = std::chrono::steady_clock::now();
+        tree.tickExactlyOnce();
+        auto end_time = std::chrono::steady_clock::now();
+        std::chrono::duration<double, std::milli> tick_duration = end_time - start_time;
+        tick_msg.data = tick_duration.count();
+        tick_time_pub->publish(tick_msg);      
         rate.sleep(); 
     }
 

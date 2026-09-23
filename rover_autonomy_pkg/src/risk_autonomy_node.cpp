@@ -32,6 +32,9 @@
 #include <std_srvs/srv/empty.hpp>
 #include <nav2_msgs/srv/clear_entire_costmap.hpp>
 
+#include "std_msgs/msg/float64.hpp"
+#include "std_msgs/msg/string.hpp"
+
 // Check Mission Objective (first action node to set the goal)
 
 class CheckMissionObjective : public BT::SyncActionNode {
@@ -39,10 +42,21 @@ private:
     std::vector<std::string> waypoints_ = {"Waypoint_Alpha", "Waypoint_Beta"};
     size_t current_index_ = 0;
     std::string current_goal_ = "";
+    rclcpp::Node::SharedPtr ros_node_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+    std_msgs::msg::String msg;
 
 public:
-    CheckMissionObjective(const std::string& name, const BT::NodeConfig& config) : BT::SyncActionNode(name, config) {}
-    static BT::PortsList providedPorts() { return { BT::OutputPort<std::string>("goal_output") }; }
+    CheckMissionObjective(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
+        : BT::SyncActionNode(name, config), ros_node_(ros_node) 
+    {
+        // Initialize the publisher
+        status_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/mission_status", 10);
+    }
+    
+    static BT::PortsList providedPorts() { 
+        return { BT::OutputPort<std::string>("goal_output") }; 
+    }
     
     BT::NodeStatus tick() override {
         bool advance = false;
@@ -63,6 +77,9 @@ public:
             } else {
                 std::cout << "\033[1;32m[BT] ALL WAYPOINTS COMPLETED! Mission Success.\033[0m\n";
                 // Return FAILURE to stop the tree from looping once the mission is completely done
+                
+                msg.data = "SUCCESS";
+                status_pub_->publish(msg);
                 return BT::NodeStatus::FAILURE; 
             }
         }
@@ -115,9 +132,8 @@ private:
     
     int publish_counter_ = 0;
 
-    // rclcpp::Client<nav2_msgs::srv::ClearEntireCostmap>::SharedPtr clear_global_client_;
-    // rclcpp::Client<nav2_msgs::srv::ClearEntireCostmap>::SharedPtr clear_local_client_;
-    // int clear_counter_ = 0;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr risk_pub_;
+    std_msgs::msg::Float64 risk_msg_;
 
 public:
     RiskAssessment(const std::string& name, const BT::NodeConfig& config, 
@@ -154,6 +170,8 @@ public:
         tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
         point_cloud_pub_ = ros_node_->create_publisher<sensor_msgs::msg::PointCloud2>("/semantic_obstacles", 10);
+
+        risk_pub_ = ros_node_->create_publisher<std_msgs::msg::Float64>("/bt/current_risk", 10);
     }
 
     static BT::PortsList providedPorts() {
@@ -199,6 +217,8 @@ public:
         // No data or no detection
         if (!last_msg_ || !last_msg_->obstacle_detected || last_msg_->detections.empty()) {
             setOutput("risk_value", 0.0);
+            risk_msg_.data = 0.0;
+            risk_pub_->publish(risk_msg_);
             return BT::NodeStatus::SUCCESS;
         }
         auto current_time = ros_node_->now();
@@ -206,6 +226,8 @@ public:
             RCLCPP_WARN_THROTTLE(ros_node_->get_logger(), *ros_node_->get_clock(), 1000, 
                                  "Perception data is stale! Ignoring old rocks.");
             setOutput("risk_value", 0.0);
+            risk_msg_.data = 0.0;
+            risk_pub_->publish(risk_msg_);
             return BT::NodeStatus::SUCCESS;
         }
 
@@ -325,8 +347,8 @@ public:
                 double var_control = 0.01;
                 double var_track = var_traj + var_control; 
                 
-                double p_cond_col_obs = std::exp(-(effective_delta_y * effective_delta_y) / (2 * var_track));
-                double p_collision = p_obstacle * p_cond_col_obs;
+                double k_col = std::exp(-(effective_delta_y * effective_delta_y) / (2 * var_track));
+                double p_collision = p_obstacle * k_col;
 
                 // ========================================================
                 // COLLISION SEVERITY INDEX
@@ -372,6 +394,8 @@ public:
         // if already known
         if (!threat_found) {
             setOutput("risk_value", 0.0);
+            risk_msg_.data = 0.0;
+            risk_pub_->publish(risk_msg_);
             return BT::NodeStatus::SUCCESS;
         }
 
@@ -382,7 +406,8 @@ public:
         setOutput("target_yaw", highest_threat.yaw);
         setOutput("target_distance", highest_threat.dist);
         setOutput("risk_value", max_risk);
-        
+        risk_msg_.data = max_risk;
+        risk_pub_->publish(risk_msg_);
         return BT::NodeStatus::SUCCESS; 
     }        
 };
@@ -390,11 +415,12 @@ public:
 class IsDanger : public BT::ConditionNode{
 private:
     rclcpp::Node::SharedPtr ros_node_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr state_pub_;
     // to handle the rock saved in blackboard
     std::shared_ptr<std::vector<std::pair<double, double>>> confirmed_obstacles_;
     // needed for point cloud publish
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_pub_;
-    
+    std_msgs::msg::String msg;
     // threshold
     double tau_2_ = 0.75; 
 
@@ -430,6 +456,8 @@ public:
     {
         // Init pub for the costmap update
         point_cloud_pub_ = ros_node_->create_publisher<sensor_msgs::msg::PointCloud2>("/semantic_obstacles", 10);
+
+        state_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/state_transition", 10);
     }
 
     static BT::PortsList providedPorts() {
@@ -454,18 +482,12 @@ public:
                 
                 std::cout << "\033[1;31m[BT] DANGER THRESHOLD MET! Risk: " << risk 
                           << ". Triggering Stop for LiDAR inspection...\033[0m\n";
-                
-                // Add to shared memory so RiskAssessment skips it on the next tick
-                //confirmed_obstacles_->push_back({x, y});
-                
-                // Publish to Nav2 so the planner routes around it when it resumes
-                //publishSemanticMap();
+
+                msg.data = "DANGER";
+                state_pub_->publish(msg);          
             }
-            // Return SUCCESS to trigger the sequence (EmergencyStop -> ReactToObstacle)
             return BT::NodeStatus::SUCCESS;
         }
-
-        // Risk is lower than tau_2, move to the Planning branch
         return BT::NodeStatus::FAILURE;
     }
 };
@@ -473,11 +495,11 @@ public:
 class IsPlanning : public BT::ConditionNode {
 private:
     rclcpp::Node::SharedPtr ros_node_;
-    
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr state_pub_;
     // confirmed rock handle
     std::shared_ptr<std::vector<std::pair<double, double>>> confirmed_obstacles_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_pub_;
-    
+    std_msgs::msg::String msg;
     // treshold lower bound for the planning zone
     double tau_1_ = 0.3; 
 
@@ -511,6 +533,8 @@ public:
         : BT::ConditionNode(name, config), ros_node_(ros_node), confirmed_obstacles_(shared_memory) 
     {
         point_cloud_pub_ = ros_node_->create_publisher<sensor_msgs::msg::PointCloud2>("/semantic_obstacles", 10);
+
+        state_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/state_transition", 10);
     }
 
     static BT::PortsList providedPorts() {
@@ -533,12 +557,16 @@ public:
             double x = 0.0, y = 0.0;
             if (getInput("target_x", x) && getInput("target_y", y)) {
                 
-                // Yellow text for medium risk
                 std::cout << "\033[1;33m[BT] PLANNING THRESHOLD MET! Risk: " << risk 
                           << ". Updating Map (Smooth Avoidance)...\033[0m\n";
                 
                 // to point cloud
+                
+                msg.data = "PLANNING";
+                state_pub_->publish(msg);
+
                 confirmed_obstacles_->push_back({x, y});
+                std::cout << confirmed_obstacles_->size();
                 publishSemanticMap();
             }
             return BT::NodeStatus::SUCCESS;
@@ -550,9 +578,17 @@ public:
 };
 
 class IsMonitor : public BT::ConditionNode {
+private:
+    rclcpp::Node::SharedPtr ros_node_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr state_pub_;
+    std_msgs::msg::String msg;
+
 public:
-    IsMonitor(const std::string& name, const BT::NodeConfig& config)
-        : BT::ConditionNode(name, config) {}
+    IsMonitor(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node)
+        : BT::ConditionNode(name, config), ros_node_(ros_node) 
+    {
+        state_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/state_transition", 10);
+    }
 
     static BT::PortsList providedPorts() {
         return {
@@ -570,6 +606,9 @@ public:
         if (risk > 0.0) {
             std::cout << "\033[1;32m[BT] Monitor Mode. Risk: " << risk 
                       << " is too low to act. Monitoring.\033[0m\n";
+
+            msg.data = "MONITORING";
+            state_pub_->publish(msg);          
         }
         return BT::NodeStatus::SUCCESS;
     }
@@ -614,33 +653,39 @@ private:
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr nav_pose_client_;
     
     // Dictionary of waypoints
-    std::map<std::string, std::pair<double, double>> waypoints_ {
-        {"Waypoint_Alpha", {-5.0, 13.0}},
-        {"Waypoint_Beta", {-3.0, 20.0}}
-    };
     // std::map<std::string, std::pair<double, double>> waypoints_ {
-    //     {"Waypoint_Alpha", {5.2, 6.5}},
-    //     {"Waypoint_Beta", {5.0, 16.0}}
+    //     {"Waypoint_Alpha", {-5.0, 13.0}},
+    //     {"Waypoint_Beta", {-3.0, 20.0}}
     // };
+    std::map<std::string, std::pair<double, double>> waypoints_ {
+        {"Waypoint_Alpha", {5.2, 6.5}},
+        {"Waypoint_Beta", {5.0, 16.0}}
+    };
     // std::map<std::string, std::pair<double, double>> waypoints_ {
     //     {"Waypoint_Alpha", {21.7, 26.4}},
     //     {"Waypoint_Beta", {0.5, 11.0}}
     // };
     // std::map<std::string, std::pair<double, double>> waypoints_ {
-    //     {"Waypoint_Alpha", {30.0, -19.0}},
-    //     {"Waypoint_Beta", {10.0, -2.5}}
+    //     {"Waypoint_Alpha", {0.7,13.0}},
+    //     {"Waypoint_Beta", {13.0, 16.0}}
+    // };
+    // std::map<std::string, std::pair<double, double>> waypoints_ {
+    //     {"Waypoint_Alpha", {-8.0, 15.0}},
+    //     {"Waypoint_Beta", {-7.0, -2.0}}
     // };
 
     bool goal_reached_ = false;
     bool goal_responded_ = false;
     bool goal_accepted_ = false;
     std::shared_ptr<rclcpp_action::ClientGoalHandle<nav2_msgs::action::NavigateToPose>> goal_handle_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
 
 public:
     FollowTrajectory(const std::string& name, const BT::NodeConfig& config, rclcpp::Node::SharedPtr ros_node) 
         : BT::StatefulActionNode(name, config), ros_node_(ros_node) 
     {
         nav_pose_client_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(ros_node_, "/navigate_to_pose");
+        status_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/mission_status", 10); 
     }    
     
     static BT::PortsList providedPorts() { 
@@ -725,6 +770,9 @@ public:
                 return BT::NodeStatus::SUCCESS;
             } else {
                 std::cout << "\033[1;31m[BT] Nav2 Failed to reach the goal.\033[0m\n";
+                std_msgs::msg::String msg;
+                msg.data = "FAILED";
+                status_pub_->publish(msg);
                 return BT::NodeStatus::FAILURE;
             }
         }
@@ -1053,12 +1101,21 @@ int main(int argc, char **argv)
             return std::make_unique<FollowTrajectory>(name, config, ros_node);
         });
 
+    factory.registerBuilder<CheckMissionObjective>("CheckMissionObjective", 
+        [ros_node](const std::string& name, const BT::NodeConfig& config) {
+            return std::make_unique<CheckMissionObjective>(name, config, ros_node);
+        });    
+    factory.registerBuilder<IsMonitor>("IsMonitor", 
+        [ros_node](const std::string& name, const BT::NodeConfig& config) {
+            return std::make_unique<IsMonitor>(name, config, ros_node);
+        });    
 
     // Standard BT Nodes
-    factory.registerNodeType<IsMonitor>("IsMonitor");
-    factory.registerNodeType<CheckMissionObjective>("CheckMissionObjective");
     factory.registerNodeType<ExecuteTask>("ExecuteTask");
     factory.registerNodeType<WaitForNextTask>("WaitForNextTask");
+
+    //timer for tick measurement
+    auto tick_time_pub = ros_node->create_publisher<std_msgs::msg::Float64>("/bt/tick_time_ms", 10);
 
     // load xml
     std::string package_share_directory = ament_index_cpp::get_package_share_directory("rover_autonomy_pkg");
@@ -1070,13 +1127,18 @@ int main(int argc, char **argv)
     std::cout << "\033[1;32m--- Risk-Based Behavior Tree Started ---\033[0m" << std::endl;
 
     //execution loop
-    
+    std_msgs::msg::Float64 tick_msg;
     // rclcpp::Rate instead of manual sleep_for to ensure a steady 100ms tick rate, dynamically adjusting for compute time.
     rclcpp::Rate rate(10.0); 
     
     while (rclcpp::ok()) {
         rclcpp::spin_some(ros_node);
+        auto start_time = std::chrono::steady_clock::now();
         tree.tickExactlyOnce();      
+        auto end_time = std::chrono::steady_clock::now();
+        std::chrono::duration<double, std::milli> tick_duration = end_time - start_time;
+        tick_msg.data = tick_duration.count();
+        tick_time_pub->publish(tick_msg);
         rate.sleep(); 
     }
 

@@ -6,6 +6,3 @@ bool valid_distance
 int32 bbox_center_x
 int32 bbox_center_y
 float32 distance_meters
-#float32 camera_distance
-#float32 error
-#float32 rel_error
