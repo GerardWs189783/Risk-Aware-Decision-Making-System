@@ -1,5 +1,8 @@
 string class_name
 float32 confidence
+float32 phi_angle
+float32 theta_angle
+bool valid_distance
 int32 bbox_center_x
 int32 bbox_center_y
 float32 distance_meters

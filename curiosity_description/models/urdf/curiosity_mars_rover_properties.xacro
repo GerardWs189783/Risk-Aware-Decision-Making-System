@@ -124,8 +124,8 @@
 	<xacro:property name="mast_cameras_Z" value="0.203994"/>
 	<xacro:property name="mast_cameras_limit" value="1.57"/>
 
-
-
+	<!-- noise-->
+	<xacro:arg name="camera_noise_stddev" default="0.007"/>
 	
 	
 </robot>

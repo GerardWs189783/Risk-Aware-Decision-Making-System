@@ -1,12 +1,30 @@
+# ROS 2 Build & Workspace Directories
+build/
+install/
+log/
+
+# Python & C++ Caches/Binaries
 __pycache__/
 *.pyc
 *.o
 *.so
 
-# Ignore entire packages
+# IDEs
+.vscode/
+
+# Large Data & Machine Learning Weights
+experiment_data/
+*.csv
+*.pt
+*.bag
+
+# Ignore specific legacy packages
 my_cpp_pkg/
 my_py_pkg/
 my_robot_bringup/
 my_robot_description/
 my_robot_interfaces/
-turtlesim_catch/
+turtlesim_catch_them_all/
+actions_py/
+actions_cpp/
+experiment_data/

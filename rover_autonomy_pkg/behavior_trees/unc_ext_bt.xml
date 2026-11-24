@@ -1,0 +1,56 @@
+ <root BTCPP_format="4">
+     <BehaviorTree ID="MainTree">
+        <ReactiveSequence name="mission_loop">
+            
+            <CheckMissionObjective name="is_mission_still_valid" goal_output="{target_waypoint}"/>
+            
+            <Sequence name="mission_steps">
+                <ExecuteTask name="execute_mission_task"/>
+
+                <ReactiveSequence name="drive_to_goal">
+
+                <!-- calculate Risk and write to Blackboard -->
+
+                <RiskAssessment name="risk_assessment" 
+                                    target_x="{shared_x}"
+                                    target_y="{shared_y}"
+                                    target_tilt="{shared_tilt}" 
+                                    target_yaw="{shared_yaw}" 
+                                    target_distance="{shared_dist}" 
+                                    risk_value="{rock_risk}"/>
+                <!-- Evauluate the risk from blackboard and trigger the right action node-->                
+                    <Fallback name="obstacle_handler">
+
+
+                        <!-- Risk value is too dangerous (DANGER) -->
+                        <Sequence name="danger_branch">
+                            <IsDanger risk_value="{rock_risk}" target_x="{shared_x}" target_y="{shared_y}"/>
+                            <EmergencyStop />
+                            <ReactToObstacle target_tilt="{shared_tilt}" 
+                                             target_yaw="{shared_yaw}" 
+                                             target_distance="{shared_dist}"/>
+                        </Sequence>
+
+                        <!-- Risk is medium (Active Perception) -->
+                        <Sequence name="planning_branch">
+                            <IsPlanning risk_value="{rock_risk}" target_x="{shared_x}" target_y="{shared_y}"/>
+                            <AlwaysSuccess />
+                        </Sequence>
+
+                        <!-- Low Risk (Monitor)-->
+                        <Sequence name="monitor_branch">
+                            <IsMonitor risk_value="{rock_risk}"/>
+                            <AlwaysSuccess />
+                        </Sequence>
+                    </Fallback>
+
+                    <FollowTrajectory name="follow_trajectory" goal_input="{target_waypoint}"/>
+
+                    </ReactiveSequence>
+
+                <WaitForNextTask name="wait_for_next_task"/>
+            </Sequence>
+
+        </ReactiveSequence>
+     </BehaviorTree>
+ </root>

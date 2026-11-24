@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="MainTree">
+    <ReactiveSequence name="mission_loop">
+      <CheckMissionObjective name="is_mission_still_valid"
+                             goal_output="{target_waypoint}"/>
+      <Sequence name="mission_steps">
+        <ExecuteTask name="execute_mission_task"/>
+        <ReactiveSequence name="drive_to_goal">
+          <Fallback name="obstacle_handler">
+            <CheckObstacle name="check_obstacle"
+                           target_tilt="{shared_tilt}"
+                           target_yaw="{shared_yaw}"
+                           target_distance="{shared_dist}"/>
+            <ReactToObstacle name="react_to_obstacle"
+                             target_tilt="{shared_tilt}"
+                             target_yaw="{shared_yaw}"
+                             target_distance="{shared_dist}"/>
+          </Fallback>
+          <FollowTrajectory name="follow_trajectory"
+                            goal_input="{target_waypoint}"/>
+        </ReactiveSequence>
+        <WaitForNextTask name="wait_for_next_task"/>
+      </Sequence>
+    </ReactiveSequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Condition ID="CheckMissionObjective"
+               editable="true">
+      <output_port name="goal_output"/>
+    </Condition>
+    <Condition ID="CheckObstacle"
+               editable="true">
+      <output_port name="target_tilt"/>
+      <output_port name="target_yaw"/>
+      <output_port name="target_distance"/>
+    </Condition>
+    <Action ID="ExecuteTask"
+            editable="true"/>
+    <Action ID="FollowTrajectory"
+            editable="true">
+      <input_port name="goal_input"/>
+    </Action>
+    <Action ID="ReactToObstacle"
+            editable="true">
+      <input_port name="target_tilt"/>
+      <input_port name="target_yaw"/>
+      <input_port name="target_distance"/>
+    </Action>
+    <Action ID="WaitForNextTask"
+            editable="true"/>
+  </TreeNodesModel>
+
+</root>

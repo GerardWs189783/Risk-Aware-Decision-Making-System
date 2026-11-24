@@ -130,7 +130,7 @@
 
 
   </ros2_control>
-
+<!-- Very important to match the time!!! -->
   <gazebo>
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <robot_param>robot_description</robot_param>
@@ -139,9 +139,9 @@
     </plugin>
 
     <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
-      <odom_frame>/odom</odom_frame>
-      <robot_base_frame>/base_footprint</robot_base_frame>
-      <odom_publish_frequency>10</odom_publish_frequency>
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_publish_frequency>50</odom_publish_frequency>
     </plugin>
 
     <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
@@ -183,12 +183,15 @@
   </gazebo>
 
   <gazebo reference="camera_link">
-    <sensor type="camera" name="camera_sensor">
+    <sensor type="rgbd_camera" name="camera_sensor">
+      <topic>camera</topic>
+      <gz_frame_id>camera_optical_frame</gz_frame_id> 
       <visualize>1</visualize>
       <update_rate>10.0</update_rate>
       <camera>
         <pose>1.0 0 0 0 0 -1.57</pose>
         <horizontal_fov>1.3962634</horizontal_fov>
+        <vertical_fov>1.047</vertical_fov> 
         <image>
           <width>1280</width>
           <height>720</height>
@@ -200,11 +203,10 @@
         </clip>
         <noise>
           <type>gaussian</type>
-          <stddev>0.007</stddev>
+          <stddev>$(arg camera_noise_stddev)</stddev>
         </noise>
       </camera>
       <always_on>1</always_on>
-      <topic>image_raw</topic>
     </sensor>
   </gazebo>
 
@@ -212,6 +214,15 @@
   <gazebo reference="chassis">
     <mu1>0.3</mu1>
     <mu2>0.3</mu2>
+
+    <sensor name="chassis_bumper" type="contact">
+      <always_on>true</always_on>
+      <update_rate>10.0</update_rate>
+      <contact>
+        <collision>chassis_collision</collision> 
+      </contact>
+      <topic>/rover/bumper</topic>
+    </sensor>
   </gazebo>
 
   <!-- Wheel Train -->

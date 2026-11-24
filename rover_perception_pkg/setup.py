@@ -27,7 +27,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "perception_node = rover_perception_pkg.perception_node:main"
+            "perception_node.py = rover_perception_pkg.perception_node:main"
         ],
     },
 )

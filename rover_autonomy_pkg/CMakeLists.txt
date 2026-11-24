@@ -9,13 +9,64 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(ament_index_cpp REQUIRED)
+find_package(rover_interfaces REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(action_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(bt_test src/test.cpp)
 ament_target_dependencies(bt_test rclcpp behaviortree_cpp)
 
+add_executable(classic_autonomy_node src/autonomy_node.cpp)
+ament_target_dependencies(classic_autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(risk_autonomy_node src/risk_autonomy_node.cpp)
+ament_target_dependencies(risk_autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(no_platt_autonomy_node src/no_platt_autonomy_node.cpp)
+ament_target_dependencies(no_platt_autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(no_pcol_autonomy_node src/no_pcol_autonomy_node.cpp)
+ament_target_dependencies(no_pcol_autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(no_severity_autonomy_node src/no_severity_autonomy_node.cpp)
+ament_target_dependencies(no_severity_autonomy_node rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(risk_autonomy_node_e3 src/risk_autonomy_node_e3.cpp)
+ament_target_dependencies(risk_autonomy_node_e3 rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(risk_autonomy_node_e4 src/risk_autonomy_node_e4.cpp)
+ament_target_dependencies(risk_autonomy_node_e4 rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+add_executable(risk_autonomy_node_e5 src/risk_autonomy_node_e5.cpp)
+ament_target_dependencies(risk_autonomy_node_e5 rclcpp behaviortree_cpp ament_index_cpp rover_interfaces tf2 tf2_ros tf2_geometry_msgs geometry_msgs sensor_msgs trajectory_msgs nav2_msgs nav_msgs rclcpp_action action_msgs std_srvs)
+
+
 # Install node
-install(TARGETS bt_test
-  DESTINATION lib/${PROJECT_NAME}
+install(TARGETS 
+bt_test 
+classic_autonomy_node
+risk_autonomy_node
+no_platt_autonomy_node
+no_pcol_autonomy_node
+no_severity_autonomy_node
+risk_autonomy_node_e3
+risk_autonomy_node_e4
+risk_autonomy_node_e5
+DESTINATION lib/${PROJECT_NAME}
+)
+
+install(DIRECTORY behavior_trees/
+  DESTINATION share/${PROJECT_NAME}/behavior_trees
 )
 
 ament_package()
