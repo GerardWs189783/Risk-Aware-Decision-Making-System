@@ -26,7 +26,7 @@ STATE_COLORS = {
 
 def plot_explainability_trace(df, scenario_name):
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 10), sharex=True)
-    fig.suptitle(f"Explainability Trace | Map $R_2$, Path $W_2$, {scenario_name.capitalize()} conditions", fontsize=18, fontweight='bold', y=0.96)
+    fig.suptitle(f"Decision Trace | Map $R_2$, Path $W_2$, {scenario_name.capitalize()} conditions", fontsize=18, fontweight='bold', y=0.96)
     
     # 1. TOP PANE: Perception & Calibration
     ax1.plot(df['Sim_Time'], df['Confidence'], label=r'Raw Confidence ($s_i$)', color='gray', alpha=0.6, linestyle='--', linewidth=2, zorder=3)
@@ -43,10 +43,10 @@ def plot_explainability_trace(df, scenario_name):
     ax2.legend(loc='upper right')
 
     # 3. BOTTOM PANE: Total Risk & BT States
-    ax3.plot(df['Sim_Time'], df['Total_Risk'], label=r'Collision Expected Risk ($R^*$)', color='red', linewidth=3, zorder=3)
+    ax3.plot(df['Sim_Time'], df['Total_Risk'], label=r'Risk ($R^*$)', color='red', linewidth=3, zorder=3)
     ax3.axhline(y=0.30, color='darkorange', linestyle='--', alpha=0.8, linewidth=2, label=r'$\tau_1$ (Plan)', zorder=2)
     ax3.axhline(y=0.75, color='darkred', linestyle='--', alpha=0.8, linewidth=2, label=r'$\tau_2$ (Danger)', zorder=2)
-    ax3.set_ylabel("Expected Risk", fontweight='bold')
+    ax3.set_ylabel("Risk", fontweight='bold')
     ax3.set_xlabel("Mission Elapsed Time (s)", fontweight='bold')
     ax3.set_ylim(-0.05, 1.05)
     ax3.legend(loc='upper right')

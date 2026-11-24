@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 
 # --- CONFIGURATION ---
-BASE_DIR = os.path.expanduser("~/ros2_ws/src/rover_experiments_pkg/experiment_data/experiment_2")
+BASE_DIR = os.path.expanduser("~/ros2_ws/src/rover_experiments_pkg/experiment_data/experiment_1")
 CSV_DIR = os.path.join(BASE_DIR, "metrics_results")
 TRAJ_DIR = os.path.join(BASE_DIR, "trajectory")
-MAP_DIFFICULTY = "hard"
+MAP_DIFFICULTY = "easy"
 
 def calculate_trajectory_distance(row):
     """Calculates the total distance driven by reading the corresponding trajectory CSV."""

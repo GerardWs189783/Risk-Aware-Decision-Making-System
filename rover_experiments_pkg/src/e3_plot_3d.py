@@ -30,14 +30,15 @@ def plot_perception_severity():
     
     surf = ax.plot_surface(P, C, R, cmap='jet', edgecolor='none', alpha=0.9, antialiased=True)
     
-    ax.set_title("Perception-Severity Relationship ($K_{col} = 1$)", fontsize=16, fontweight='bold')
-    ax.set_xlabel("Probability of Obstacle ($P(\t{obstacle})$)", fontweight='bold')
-    ax.set_ylabel("Collision Severity Index ($C_i$)", fontweight='bold')
-    ax.set_zlabel("Expected Risk ($R_i$)", fontweight='bold')
+    # FIXED: Added 'r' prefix for raw strings and replaced \text with \mathrm
+    ax.set_title(r"Perception-Severity Relationship ($K_{\mathrm{col},i} = 1$)", fontsize=16, fontweight='bold')
+    ax.set_xlabel(r"$\mathbf{P(\mathrm{obstacle}_i)}$", fontweight='bold')
+    ax.set_ylabel(r"Collision Severity Index ($C_i$)", fontweight='bold')
+    ax.set_zlabel(r"Risk ($R_i$)", fontweight='bold')
     ax.set_zlim(0, 1.0)
     
     cbar = plt.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
-    cbar.set_label("Expected Risk ($R_i$)", fontweight='bold')
+    cbar.set_label("Total Obstacle-Related Collision Risk ($R_i$)", fontweight='bold')
     
     ax.view_init(elev=25, azim=-120)
     plt.tight_layout()
@@ -70,14 +71,15 @@ def plot_perception_spatial():
     
     surf = ax.plot_surface(P, d, R, cmap='jet', edgecolor='none', alpha=0.9, antialiased=True)
     
-    ax.set_title("Perception-Spatial Relationship ($C_i = 0.5$)", fontsize=16, fontweight='bold')
-    ax.set_xlabel("Probability of Obstacle ($P(\t{obstacle})$)", fontweight='bold')
-    ax.set_ylabel("Path-Obstacle Distance ($\Delta y_i$) [m]", fontweight='bold')
-    ax.set_zlabel("Expected Risk ($R_i$)", fontweight='bold')
+    # FIXED: Added 'r' prefix for raw strings and replaced \text with \mathrm
+    ax.set_title(r"Perception-Spatial Relationship ($C_i = 0.5$)", fontsize=16, fontweight='bold')
+    ax.set_xlabel(r"$\mathbf{P(\mathrm{obstacle}_i)}$", fontweight='bold')
+    ax.set_ylabel(r"Path-Obstacle Distance ($\Delta y_i$) [m]", fontweight='bold')
+    ax.set_zlabel(r"Risk ($R_i$)", fontweight='bold')
     ax.set_zlim(0, 0.5) # Max risk here is 0.5 because C_i is capped at 0.5
     
     cbar = plt.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
-    cbar.set_label("Total Expected Risk ($R_i$)", fontweight='bold')
+    cbar.set_label("Total Obstacle-Related Collision Risk ($R_i$)", fontweight='bold')
     
     # Adjust viewing angle for best perspective on the Gaussian curve
     ax.view_init(elev=25, azim=156)
@@ -88,5 +90,5 @@ def plot_perception_spatial():
 
 if __name__ == "__main__":
     print("Generating Theoretical Parametric Plots...")
-    #plot_perception_severity()
+    plot_perception_severity()
     plot_perception_spatial()

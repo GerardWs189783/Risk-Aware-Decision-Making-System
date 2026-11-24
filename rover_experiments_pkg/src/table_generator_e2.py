@@ -9,12 +9,12 @@ import numpy as np
 BASE_DIR = os.path.expanduser("~/ros2_ws/src/rover_experiments_pkg/experiment_data/experiment_2") 
 CSV_DIR = os.path.join(BASE_DIR, "metrics_results")
 TRAJ_DIR = os.path.join(BASE_DIR, "trajectory")
-MAP_DIFFICULTY = "medium"
+MAP_DIFFICULTY = "hard"
 
 # UPDATE THIS: Map your exact CSV variant names to the formal names for the LaTeX thesis
 VARIANTS = {
     'no_platt':'No Platt scaling calibration',
-    'no_pcol':'No Probability of Collision',
+    'no_pcol':'No Collision Proximity Kernel',
     'no_severity':'No Severity Index'
 }
 

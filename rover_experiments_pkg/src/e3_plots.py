@@ -23,7 +23,7 @@ STATE_COLORS = {
 def plot_dashboard(df, scenario_name):
     """Creates the stacked 3-pane Anatomy of Risk dashboard against Time."""
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 10), sharex=True)
-    fig.suptitle(f"Expected Risk components plots | {scenario_name.capitalize()} Conditions", fontsize=21, fontweight='bold', y=0.95)
+    fig.suptitle(f"Risk components plots | {scenario_name.capitalize()} Conditions", fontsize=21, fontweight='bold', y=0.95)
     
     # 1. TOP PANE: Perception
     ax1.plot(df['Sim_Time'], df['Confidence'], label='Raw Confidence ($s_i$)', color='gray', alpha=0.6, linestyle='--')
@@ -35,14 +35,14 @@ def plot_dashboard(df, scenario_name):
 
     # 2. MIDDLE PANE: Spatial & Kinematic
     ax2.plot(df['Sim_Time'], df['K_Collision'], label='Collision Kernel ($K_{col}$)', color='purple', linewidth=2)
-    ax2.plot(df['Sim_Time'], df['C_Severity'], label='Severity Index ($C_i$)', color='darkorange', linewidth=2)
+    ax2.plot(df['Sim_Time'], df['C_Severity'], label='Collision Severity Index ($C_i$)', color='darkorange', linewidth=2)
     ax2.set_ylabel("Factor Value", fontsize=15, fontweight='bold')
     ax2.set_ylim(-0.05, 1.05)
     ax2.legend(loc='upper left')
     ax2.grid(True, linestyle='--', alpha=0.5)
 
     # 3. BOTTOM PANE: Total Risk & BT States
-    ax3.plot(df['Sim_Time'], df['Total_Risk'], label='Total Expected Risk ($R_i$)', color='red', linewidth=2.5)
+    ax3.plot(df['Sim_Time'], df['Total_Risk'], label='Total Risk ($R_i$)', color='red', linewidth=2.5)
     ax3.axhline(y=0.30, color='darkorange', linestyle='--', alpha=0.8, label=r'Planning Threshold ($\tau_1$)')
     ax3.axhline(y=0.75, color='darkred', linestyle='--', alpha=0.8, label=r'Danger Threshold ($\tau_2$)')
     ax3.set_ylabel("Risk ($R_i$)", fontsize=15, fontweight='bold')
@@ -119,14 +119,14 @@ def plot_3d_variable(df, y_col, y_label, file_suffix, scenario_name):
     ax.set_title(f"3D Risk {plot_type} ({y_label}) | {scenario_name.capitalize()} Conditions", fontsize=14, fontweight='bold')
     ax.set_xlabel("Distance to Obstacle (m)", fontweight='bold')
     ax.set_ylabel(y_label, fontweight='bold')
-    ax.set_zlabel("Total Expected Risk", fontweight='bold')
+    ax.set_zlabel("Total Risk", fontweight='bold')
     
     # Force Z-axis to be 0 to 1 for consistency
     ax.set_zlim(0, 1.05)
     
     # Add a colorbar for clarity
     cbar = plt.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
-    cbar.set_label("Total Expected Risk ($R_i$)", fontweight='bold')
+    cbar.set_label("Total Risk ($R_i$)", fontweight='bold')
     
     plt.tight_layout()
     plt.savefig(os.path.join(OUTPUT_DIR, f"3d_{file_suffix}_{scenario_name}.png"), dpi=300)

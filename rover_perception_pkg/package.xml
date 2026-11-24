@@ -3,9 +3,9 @@
 <package format="3">
   <name>rover_perception_pkg</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="gerard@todo.todo">gerard</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Perception system package</description>
+  <maintainer email="gery.wg91@gmail.com">gerard</maintainer>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>python3-opencv</depend>

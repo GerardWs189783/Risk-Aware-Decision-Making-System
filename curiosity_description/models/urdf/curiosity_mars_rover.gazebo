@@ -203,8 +203,7 @@
         </clip>
         <noise>
           <type>gaussian</type>
-          <stddev> 0.3 </stddev>
-          <!--<stddev>$(arg camera_noise_stddev)</stddev>-->
+          <stddev>$(arg camera_noise_stddev)</stddev>
         </noise>
       </camera>
       <always_on>1</always_on>

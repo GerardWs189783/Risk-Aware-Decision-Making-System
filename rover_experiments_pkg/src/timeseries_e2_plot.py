@@ -16,7 +16,7 @@ CSV_FILES = glob.glob(search_path)
 VARIANTS = {
     'uncertainty_aware': 'Full Proposed BT',
     'no_platt': 'No Platt scaling',
-    'no_pcol': 'No Probability of Collision',
+    'no_pcol': r"No $K_{\mathrm{col},i}$",
     'no_severity': 'No Severity Index'
 }
 
@@ -61,7 +61,7 @@ def main():
 
         # All ablation variants use Risk calculation
         metric_col = 'Risk'
-        metric_label = 'Expected Risk'
+        metric_label = 'Risk'
         
         # 2. SETUP THE FIGURE
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)

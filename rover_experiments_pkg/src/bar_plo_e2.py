@@ -18,7 +18,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 VARIANTS = {
     'uncertainty_aware': 'Full Proposed BT',
     'no_platt': 'No Platt scaling',
-    'no_pcol': 'No Probability of Collision',
+    'no_pcol': 'No Collision Proximity Kernel',
     'no_severity': 'No Severity Index'
 }
 

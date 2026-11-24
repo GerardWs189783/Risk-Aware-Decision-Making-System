@@ -30,7 +30,7 @@ def main():
         # 2. AUTO-DETECT VARIANT
         is_proposed = 'Risk' in df.columns
         metric_col = 'Risk' if is_proposed else 'Confidence'
-        metric_label = 'Expected Risk' if is_proposed else 'Confidence Score'
+        metric_label = 'Risk' if is_proposed else 'Confidence Score'
         
         # 3. EXTRACT METADATA FOR TITLE
         clean_name = base_name.replace('timeseries_', '').replace('.csv', '')

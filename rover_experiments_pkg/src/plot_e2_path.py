@@ -15,7 +15,7 @@ WAYPOINT_SETS = ["wp1", "wp2", "wp3"]
 # Define the Ablation Variants and their formal titles for the plot headers
 VARIANTS = {
     "no_platt": "No Platt Scaling",
-    "no_pcol": "No P(Col)",
+    "no_pcol": r"No $K_{\mathrm{col},i}$",
     "no_severity": "No Severity Index"
 }
 

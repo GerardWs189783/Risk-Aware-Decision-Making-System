@@ -332,26 +332,21 @@ private:
     rclcpp_action::Client<nav2_msgs::action::NavigateToPose>::SharedPtr nav_pose_client_;
     rclcpp::Client<std_srvs::srv::Empty>::SharedPtr brake_client_;
     // Dictionary of waypoints
-    // std::map<std::string, std::pair<double, double>> waypoints_ {
-    //     {"Waypoint_Alpha", {-5.0, 13.0}},
-    //     {"Waypoint_Beta", {-3.0, 20.0}}
-    // };
-    std::map<std::string, std::pair<double, double>> waypoints_ {
-        {"Waypoint_Alpha", {5.2, 6.5}},
-        {"Waypoint_Beta", {5.0, 16.0}}
+    const std::map<std::string, std::map<std::string, std::pair<double, double>>> waypoint_presets_ = {
+        {"wp1", {
+            {"Waypoint_Alpha", {-8.0, 15.0}},
+            {"Waypoint_Beta",  {-7.0, -2.0}}
+        }},
+        {"wp2", {
+            {"Waypoint_Alpha", {5.2, 6.5}},
+            {"Waypoint_Beta",  {5.0, 16.0}}
+        }},
+        {"wp3", {
+            {"Waypoint_Alpha", {-5.0, 13.0}},
+            {"Waypoint_Beta",  {-3.0, 20.0}}
+        }}
     };
-    // std::map<std::string, std::pair<double, double>> waypoints_ {
-    //     {"Waypoint_Alpha", {21.7, 26.4}},
-    //     {"Waypoint_Beta", {0.5, 11.0}}
-    // };
-    // std::map<std::string, std::pair<double, double>> waypoints_ {
-    //     {"Waypoint_Alpha", {0.7,13.0}},
-    //     {"Waypoint_Beta", {13.0, 16.0}}
-    // };
-    // std::map<std::string, std::pair<double, double>> waypoints_ {
-    //     {"Waypoint_Alpha", {-8.0, 15.0}},
-    //     {"Waypoint_Beta", {-7.0, -2.0}}
-    // };
+    std::map<std::string, std::pair<double, double>> waypoints_;
     bool goal_reached_ = false;
     bool goal_responded_ = false;
     bool goal_accepted_ = false;
@@ -366,6 +361,20 @@ public:
             nav_pose_client_ = rclcpp_action::create_client<nav2_msgs::action::NavigateToPose>(ros_node_, "/navigate_to_pose");
             brake_client_ = ros_node_->create_client<std_srvs::srv::Empty>("/stop");
             status_pub_ = ros_node_->create_publisher<std_msgs::msg::String>("/bt/mission_status", 10);
+            // Read the waypoint_config parameter declared on the ROS node
+            std::string wp_config = "wp2";
+            if (ros_node_->has_parameter("waypoint_config")) {
+                wp_config = ros_node_->get_parameter("waypoint_config").as_string();
+            }
+
+            auto preset_it = waypoint_presets_.find(wp_config);
+            if (preset_it != waypoint_presets_.end()) {
+                waypoints_ = preset_it->second;
+                RCLCPP_INFO(ros_node_->get_logger(), "Loaded validated waypoint preset: %s", wp_config.c_str());
+            } else {
+                RCLCPP_WARN(ros_node_->get_logger(), "Unknown waypoint_config '%s', falling back to 'wp2'", wp_config.c_str());
+                waypoints_ = waypoint_presets_.at("wp2");
+            }
         }    
     static BT::PortsList providedPorts() { 
         return { BT::InputPort<std::string>("goal_input") }; 
