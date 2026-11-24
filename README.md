@@ -77,15 +77,15 @@ python3 ~/ros2_ws/src/rover_experiments_pkg/scripts/simulation_run_manager.py
 
 ### CLI Options
 
-| Flag | Options | Default | Description |
+| Option | Values | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `--variant` | `uncertainty_aware`, `classic`, `no_platt`, `no_pcol`, `no_severity` | `uncertainty_aware` | Behavior Tree decision-making architecture |
+| `--variant` | `uncertainty_aware`, `classic`,<br>`no_platt`, `no_pcol`, `no_severity` | `uncertainty_aware` | Behavior Tree decision-making architecture |
 | `--scenario` | `ideal`, `gauss`, `storm` | `ideal` | Environmental & camera noise condition |
 | `--map` | `easy`, `medium`, `hard` | `medium` | Obstacle world difficulty |
 | `--wp` | `wp1`, `wp2`, `wp3` | `wp2` | Spawn and waypoint route preset |
-| `--headless` | *(flag)* | `false` | Run Gazebo headless and disable RViz2 |
-| `--no-nvidia` | *(flag)* | `false` | Disable NVIDIA PRIME render offload (use Intel/Mesa) |
-| `--log-metrics` | *(flag)* | `false` | Record mission telemetry to CSV and exit on completion |
+| `--headless` | — | `False` | Run Gazebo headless and disable RViz2 |
+| `--no-nvidia` | — | `False` | Disable NVIDIA PRIME render offload (use Intel/Mesa) |
+| `--log-metrics` | — | `False` | Record mission telemetry to CSV and exit on completion |
 | `--run-id` | `<int>` | `1` | Run identifier when `--log-metrics` is enabled |
 
 ### Example Runs
